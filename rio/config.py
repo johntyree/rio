@@ -1,8 +1,20 @@
 import os
-import sys
+import optparse
 
-HOST = "john.bitsurge.net"
-PORT = int(sys.argv[1:] or 1986)
+
+def parseargs():
+    parser = optparse.OptionParser()
+    parser.add_option('-p', '--port', type=int, default=1986,
+                      help="Port on which to listen for clients")
+    parser.add_option('-H', '--host', default="localhost",
+                      help="Our hostname")
+    (options, args) = parser.parse_args()
+    return (options, args)
+
+opts, _ = parseargs()
+
+HOST = opts.host
+PORT = opts.port
 
 DIRECTORY = os.path.expanduser('~/{host}/public/simply'.format(host=HOST))
 
@@ -20,5 +32,5 @@ AD_TITLES = [
     'Air Lounge Radio - Jingle',
     'Sfx - AdArrival',
     'AddictedToRadio',
+    'ADWTAG',  # di.fm
 ]
-
