@@ -3,14 +3,13 @@
 from __future__ import print_function
 
 import itertools
-import os
-from threading import Thread
-from SocketServer import ThreadingMixIn
+from SocketServer import ForkingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from .streamer import icystream
 
 from .config import HOST, PORT, STREAMS
+
 
 class Handler(BaseHTTPRequestHandler):
 
@@ -20,14 +19,19 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(200)
         self.send_header("Content-type", "audio/mpeg")
         self.end_headers()
-        for url in itertools.cycle(STREAMS):
-            icystream(url, self.wfile)
+        try:
+            for url in itertools.cycle(STREAMS):
+                icystream(url, self.wfile)
+        except KeyboardInterrupt:
+            pass
 
-class ThreadingHTTPServer(ThreadingMixIn, HTTPServer):
+
+class ForkingHTTPServer(ForkingMixIn, HTTPServer):
     pass
 
+
 def serve_on_port(host=HOST, port=PORT):
-    server = ThreadingHTTPServer(("localhost", port), Handler)
+    server = HTTPServer(("localhost", port), Handler)
     try:
         server.serve_forever()
     finally:
