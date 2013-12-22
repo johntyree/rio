@@ -25,11 +25,17 @@ STREAMS = [
     'http://listen.radionomy.com/aair-lounge-radio',
 ]
 
-AD_TITLES = [
+Radionomy_ads = [
     'Musicplus - Jingle',
     'Joyeux Noel -',
     'Air Lounge Radio - Jingle',
     'Sfx - AdArrival',
     'AddictedToRadio',
-    'ADWTAG',  # di.fm
 ]
+
+DIfm_ads = [
+    'ADWTAG',
+    'www.di.fm/jobs',
+]
+
+AD_TITLES = Radionomy_ads + DIfm_ads
