@@ -1,14 +1,14 @@
-Rio
-===
+Rio - Radio without ads
+=======================
 
-Radio without ads.
+A pseudo-DJ for internet radio.
 
 How does it work?
 -----------------
 
-Rio streams music from shoutcast servers and examines the (ICY) metadata that
+Rio streams music from ShoutCast servers and examines the (ICY) metadata that
 they send down. When it sees something it doesn't like, it switches to the next
-stream in its list.
+stream in the list.
 
 
 Installation
@@ -30,5 +30,6 @@ Over time, Rio will learn when to switch stations.
 Running
 -------
 
-First `python -m rio.rio`. Then point your client at http://localhost:1986
+First `python -m rio.rio`. Then point your client at `http://localhost:1986`
+(reppin' funky '86!)
 
