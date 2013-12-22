@@ -19,7 +19,6 @@ PORT = opts.port
 DIRECTORY = os.path.expanduser('~/{host}/public/simply'.format(host=HOST))
 
 STREAMS = [
-    'http://pub1.di.fm/di_space_dreams',
     'http://pub1.di.fm/di_lounge',
     'http://pub1.di.fm/di_chillout',
     'http://listen.radionomy.com/air-lounge',
