@@ -18,24 +18,27 @@ PORT = opts.port
 
 DIRECTORY = os.path.expanduser('~/{host}/public/simply'.format(host=HOST))
 
-STREAMS = [
+Lounge = (
     'http://pub1.di.fm/di_lounge',
     'http://pub1.di.fm/di_chillout',
     'http://listen.radionomy.com/air-lounge',
     'http://listen.radionomy.com/aair-lounge-radio',
-]
+)
 
-Radionomy_ads = [
+STREAMS = Lounge
+
+Radionomy_ads = (
     'Musicplus - Jingle',
     'Joyeux Noel -',
     'Air Lounge Radio - Jingle',
     'Sfx - AdArrival',
     'AddictedToRadio',
-]
+)
 
-DIfm_ads = [
+DIfm_ads = (
     'ADWTAG',
     'www.di.fm/jobs',
-]
+    'Choose premium for the best audio experience',
+)
 
 AD_TITLES = Radionomy_ads + DIfm_ads
