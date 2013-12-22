@@ -1,5 +1,5 @@
-Rio - Radio without ads
-=======================
+Rio: (Radio without ads)
+========================
 
 A pseudo-DJ for internet radio.
 
