@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 # coding: utf-8
-# GistID: 7799767
 
 from __future__ import print_function
 
 # import cStringIO
-import itertools
-import os
 import re
 import requests
 import sys
@@ -14,7 +11,6 @@ import time
 from urllib2 import urlparse
 urlparse, urljoin = urlparse.urlparse, urlparse.urljoin
 
-from .config import STREAMS
 from .config import AD_TITLES as bacteria
 
 
@@ -23,32 +19,14 @@ metadata_regex = re.compile(
 stream_title = "{artist} - {title}"
 
 
-def url_file(url):
-    """ Return a reasonable filename for the given url. """
-    sep = os.path.sep
-    u = urlparse(url)
-    host = u.netloc.replace('.', '_')
-    path = '_-_'.join(u.path.strip(sep).split(sep))
-    filename = '_-_'.join((host, path))
-    return os.path.join(directory, filename)
-
-
-def url_file_url(url_file):
-    homedir = os.path.expanduser('~')
-    hostdir = os.path.join(homedir, HOST)
-    url = os.path.relpath(url_file, start=hostdir)
-    baseurl = 'http://{host}'.format(host=HOST)
-    return urljoin(baseurl, url)
-
-
 def rotten(meat):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
     if meat:
         for bacterium in bacteria:
             if bacterium in meat or meat in bacterium:
-                print("{} <-> {}!".format(meat, bacterium))
+                print("{!r} <-> {!r}!".format(meat, bacterium))
         return any(bacterium in meat or meat in bacterium
-                for bacterium in bacteria)
+                   for bacterium in bacteria)
     else:
         return False
 
@@ -135,7 +113,7 @@ def icystream(url, output_buffer):
             start_time = time.time()
         elif meat is None:
             # Found an ad title in the stream, abort!
-            print(" - Rotten!", file=fout)
+            print("Rotten!", file=fout)
             start_time = time.time()
             elapsed = ''
             return
@@ -164,20 +142,3 @@ def elapsed_since(start):
         template = "{days}d {hours:02d}h {minutes:02d}:{seconds:02d}"
         data['days'], data['hours'] = divmod(data['hours'], 24)
     return template.format(**data)
-
-
-def streams_to_playlist(filename, streams):
-    playlist = os.path.join(directory, 'simply.m3u')
-    print("Playlist at:", playlist)
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-
-    with open(playlist, 'w') as pl:
-        url_files = (url_file(url) for url in STREAMS)
-        url_file_urls = (url_file_url(url) + '\n' for url in url_files)
-        pl.writelines(url_file_urls)
-
-
-
-if __name__ == '__main__':
-    main()
