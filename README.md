@@ -11,6 +11,11 @@ they send down. When it sees something it doesn't like, it switches to the next
 stream in the list.
 
 
+Dependencies
+------------
+
+ * requests
+
 Installation
 ------------
 
