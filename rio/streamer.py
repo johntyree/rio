@@ -13,6 +13,7 @@ from urllib2 import urlparse
 urlparse, urljoin = urlparse.urlparse, urlparse.urljoin
 
 from .config import AD_TITLES as bacteria, ICY_METAINT
+from .utilities import elapsed_since, print_headers
 
 
 metadata_regex = re.compile(
@@ -127,11 +128,6 @@ class MetadataInjector(object):
             self.output_buffer.write('\x00')
 
 
-def print_headers(headers):
-    for key, val in headers.items():
-        print("{key}: {val}".format(key=key, val=val))
-
-
 def icystream(url, output_buffer, forward_metadata=False):
     """Stream MP3 data, parsing the titles as you go and givng up when a
     commercial is detected.
@@ -196,22 +192,3 @@ def icystream(url, output_buffer, forward_metadata=False):
         fout.flush()
         # Finally write the audio out to the client
         output_buffer.write(chunk)
-
-
-def elapsed_since(start):
-    """ Return a string minutes:seconds of time pased since `start`.
-
-    `start` - Seconds since the epoch.
-
-    """
-    data = {'minutes': 0, 'hours': 0, 'days': 0, 'seconds': 0}
-    elapsed = int(round(time.time() - start))
-    data['minutes'], data['seconds'] = divmod(elapsed, 60)
-    template = "{minutes}:{seconds:02d}"
-    if data['minutes'] > 60:
-        template = "{hours}h {minutes:02d}:{seconds:02d}"
-        data['hours'], data['minutes'] = divmod(data['minutes'], 60)
-    if data['hours'] > 24:
-        template = "{days}d {hours:02d}h {minutes:02d}:{seconds:02d}"
-        data['days'], data['hours'] = divmod(data['hours'], 24)
-    return template.format(**data)

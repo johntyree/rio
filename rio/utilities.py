@@ -4,6 +4,11 @@
 import time
 
 
+def print_headers(headers):
+    for key, val in headers.items():
+        print("{key}: {val}".format(key=key, val=val))
+
+
 def elapsed_since(start):
     """ Return a string minutes:seconds of time pased since `start`.
 
