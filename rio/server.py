@@ -5,6 +5,7 @@ from __future__ import print_function
 import itertools
 from SocketServer import ForkingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
+from requests import ConnectionError
 
 from .streamer import icystream
 
@@ -30,6 +31,8 @@ class Handler(BaseHTTPRequestHandler):
         try:
             for url in itertools.cycle(STREAMS):
                 icystream(url, self.wfile, forward_metadata=forward)
+        except ConnectionError as e:
+            print(e)
         except KeyboardInterrupt:
             pass
 
