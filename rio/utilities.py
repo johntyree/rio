@@ -7,6 +7,38 @@ import sys
 import time
 
 
+class Duplexer(object):
+    ''' A collection which delegates attribute getting and setting to
+    children.'''
+
+    def __init__(self, children):
+        self.__dict__['children'] = tuple(children)
+
+    def __getattr__(self, attr):
+        kids = tuple(getattr(child, attr) for child in self.children)
+        return Duplexer(kids)
+
+    def __call__(self, *args, **kwargs):
+        rets = tuple(child(*args, **kwargs) for child in self.children)
+        return Duplexer(rets)
+
+    def __setattr__(self, attr, val):
+        if attr in self.__dict__:
+            self.__dict__[attr] = val
+        else:
+            for child in self.children:
+                setattr(child, attr, val)
+
+    def __iter__(self):
+        return iter(self.children)
+
+    def __repr__(self):
+        return "{}: {!r}".format(self.__class__, self.children)
+
+    def __str__(self):
+        return "{}: {!s}".format(self.__class__, self.children)
+
+
 def print_headers(headers, file=sys.stdout):
     for key, val in headers.items():
         print("{key}: {val}".format(key=key, val=val), file=file)
