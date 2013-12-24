@@ -20,7 +20,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # FIXME: When the content-type changes between streams, we're probably
         # boned.
+        print(file=sys.stderr)
         print_headers(self.headers, file=sys.stderr)
+        print(file=sys.stderr)
         forward = 'icy-metadata' in self.headers
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')
