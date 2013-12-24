@@ -23,8 +23,15 @@ stream_title = "{artist} - {title}"
 
 def rotten(meat):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
-    return meat and any(bacterium in meat or meat in bacterium
-                        for bacterium in bacteria)
+    return tuple(bacterium for bacterium in bacteria
+                 if meat  # if no meat, it's not rotten
+                 and (bacterium in meat or meat in bacterium))
+
+
+def show_rotten(raw, bad, file=sys.stderr):
+    for b in bad:
+        msg = '''Rotten! {!r} <-> {!r}!'''.format(raw, b)
+        print(msg, file=file)
 
 
 def parse_meat(stream):
@@ -157,9 +164,12 @@ def icystream(url, output_buffer, forward_metadata=False):
         raw_meat = parse_meat(stream)
         if raw_meat:
             # We got some new metadata
-            if rotten(raw_meat):
+            bad_meat = rotten(raw_meat)
+            if bad_meat:
                 # Found an ad title in the stream, abort!
-                print("Rotten!", file=fout)
+                print(file=fout)
+                show_rotten(raw_meat, bad_meat, file=fout)
+                print(file=fout)
                 start_time = time.time()
                 elapsed = ''
                 return
@@ -179,7 +189,7 @@ def icystream(url, output_buffer, forward_metadata=False):
             # Erase the old time
             print(chr(8) * len(elapsed), end='', file=fout)
             # Print the new time
-            elapsed = " (" + elapsed_since(start_time) + ")"
+            elapsed = " ({})".format(elapsed_since(start_time))
             print(elapsed, end='', file=fout)
         # Get all the UI data out the door
         fout.flush()
