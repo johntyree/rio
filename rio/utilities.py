@@ -12,14 +12,14 @@ class Duplexer(object):
     children.'''
 
     def __init__(self, children):
-        self.__dict__['children'] = tuple(children)
+        self.__dict__['children'] = list(children)
 
     def __getattr__(self, attr):
-        kids = tuple(getattr(child, attr) for child in self.children)
+        kids = list(getattr(child, attr) for child in self.children)
         return Duplexer(kids)
 
     def __call__(self, *args, **kwargs):
-        rets = tuple(child(*args, **kwargs) for child in self.children)
+        rets = list(child(*args, **kwargs) for child in self.children)
         return Duplexer(rets)
 
     def __setattr__(self, attr, val):
