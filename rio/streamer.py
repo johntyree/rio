@@ -3,14 +3,14 @@
 
 from __future__ import print_function
 
-# import cStringIO
 import re
-import requests
 import sys
 import time
+import urllib2
+urlparse, urljoin = urllib2.urlparse.urlparse, urllib2.urlparse.urljoin
 from math import ceil
-from urllib2 import urlparse
-urlparse, urljoin = urlparse.urlparse, urlparse.urljoin
+
+import requests
 
 from .config import AD_TITLES as bacteria, ICY_METAINT
 from .utilities import elapsed_since, print_headers
