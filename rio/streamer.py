@@ -8,10 +8,11 @@ import re
 import requests
 import sys
 import time
+from math import ceil
 from urllib2 import urlparse
 urlparse, urljoin = urlparse.urlparse, urlparse.urljoin
 
-from .config import AD_TITLES as bacteria
+from .config import AD_TITLES as bacteria, ICY_METAINT
 
 
 metadata_regex = re.compile(
@@ -40,23 +41,16 @@ def parse_meat(stream):
 
     """
     meatlen = stream.read(1)
+    meatlen = ord(meatlen) * 16
+    return stream.read(meatlen).strip()
 
-    if meatlen:
 
-        meatlen = ord(meatlen) * 16
-        meat = stream.read(meatlen).strip()
-
-        if meat:
-            print("\n{}".format(meat), file=sys.stderr)
-
-        if rotten(meat):
-            return None
-
-        match = metadata_regex.search(meat)
-        if match:
-            return stream_title.format(**match.groupdict())
-
-    return ''
+def format_meat(meat):
+    match = metadata_regex.search(meat)
+    if match:
+        return stream_title.format(**match.groupdict())
+    else:
+        return "Unknown format: {!r}".format(meat)
 
 
 class BufferedRequest(object):
@@ -76,7 +70,59 @@ class BufferedRequest(object):
         return ret
 
 
-def icystream(url, output_buffer):
+class MetadataInjector(object):
+    """ A wrapper around an output buffer that inserts ICY format metadata
+    every `metaint` bytes.
+
+    """
+
+    def __init__(self, output_buffer, metaint):
+        self.output_buffer = output_buffer
+        self.metaint = metaint
+        self.remaining = metaint
+        self._icy = ""
+
+    def icy():
+        doc = "The icy metadata, padded."
+
+        def fget(self):
+            return self._icy
+
+        def fset(self, value):
+            """ Pad it out to a multiple of 16 bytes """
+            icylen = int(ceil(len(value) / 16.0)) * 16
+            self._icy = "{value:\x00<{icylen}s}".format(value=value,
+                                                        icylen=icylen)
+        return locals()
+    icy = property(**icy())
+
+    def write(self, data):
+        buf = data
+        if self.metaint >= 0:
+            while len(buf) >= self.remaining:
+                data, buf = buf[:self.remaining], buf[self.remaining:]
+                self.output_buffer.write(data)
+                self.remaining = self.metaint
+                self.write_icy()
+            self.remaining -= len(buf)
+        self.output_buffer.write(buf)
+
+    def write_icy(self):
+        if self.icy:
+            icylen = chr(len(self.icy) / 16)
+            self.output_buffer.write(icylen)
+            self.output_buffer.write(self.icy)
+            self._icy = ''
+        else:
+            self.output_buffer.write('\x00')
+
+
+def print_headers(headers):
+    for key, val in headers.items():
+        print("{key}: {val}".format(key=key, val=val))
+
+
+def icystream(url, output_buffer, forward_metadata=False):
     """Stream MP3 data, parsing the titles as you go and givng up when a
     commercial is detected.
 
@@ -94,18 +140,25 @@ def icystream(url, output_buffer):
                                         reason=req.reason),
               file=fout)
         return
+    else:
+        print_headers(req.headers)
+
     try:
         interval = int(req.headers['icy-metaint'])
+        output_buffer = MetadataInjector(output_buffer, ICY_METAINT)
     except KeyError as e:
         print(e)
         interval = 0
+        output_buffer = MetadataInjector(output_buffer, 0)
     stream = BufferedRequest(req)
 
     start_time = time.time()
     while True:
         chunk = stream.read(interval)
-        meat = parse_meat(stream)
-        if meat:
+        raw_meat = parse_meat(stream)
+        if raw_meat:
+            output_buffer.icy = raw_meat
+            meat = format_meat(raw_meat)
             if elapsed:
                 print(file=fout)
             fout.write(meat)

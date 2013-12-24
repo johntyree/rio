@@ -16,6 +16,7 @@ opts, _ = parseargs()
 HOST = opts.host
 PORT = opts.port
 
+ICY_METAINT = 8192
 DIRECTORY = os.path.expanduser('~/{host}/public/simply'.format(host=HOST))
 
 Lounge = (
