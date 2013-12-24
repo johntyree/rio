@@ -173,7 +173,7 @@ def icystream(url, output_buffer, forward_metadata=False):
             # Copy new icy metadata to clients
             output_buffer.icy = raw_meat
             meat = format_meat(raw_meat)
-            print(meat, file=fout)
+            print(meat, end='', file=fout)
             if elapsed:
                 print(file=fout)
             elapsed = ''
