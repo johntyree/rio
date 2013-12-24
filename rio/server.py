@@ -10,6 +10,7 @@ from .streamer import icystream
 
 from .config import HOST, PORT, STREAMS, ICY_METAINT
 
+
 def print_headers(headers):
     for key, val in headers.items():
         print("{key}: {val}".format(key=key, val=val))

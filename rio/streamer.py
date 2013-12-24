@@ -78,18 +78,17 @@ class MetadataInjector(object):
 
     def __init__(self, output_buffer, metaint):
         self.output_buffer = output_buffer
-        self.metaint = metaint
-        self.remaining = metaint
+        self.metaint = self._bytes_remaining = metaint
         self._icy = ""
 
     def icy():
-        doc = "The icy metadata, padded."
+        doc = "The icy metadata, aligned to 16 bytes."
 
         def fget(self):
             return self._icy
 
         def fset(self, value):
-            """ Pad it out to a multiple of 16 bytes """
+            # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
             self._icy = "{value:\x00<{icylen}s}".format(value=value,
                                                         icylen=icylen)
@@ -98,22 +97,33 @@ class MetadataInjector(object):
 
     def write(self, data):
         buf = data
+        # If we have metadata to forward
         if self.metaint >= 0:
-            while len(buf) >= self.remaining:
-                data, buf = buf[:self.remaining], buf[self.remaining:]
+            # If the buf len is large enough that we'll need to inject, write
+            # out as much as needed, then inject
+            while len(buf) >= self._bytes_remaining:
+                idx = self._bytes_remaining
+                data, buf = buf[:idx], buf[idx:]
                 self.output_buffer.write(data)
-                self.remaining = self.metaint
+                self._bytes_remaining = self.metaint
                 self.write_icy()
-            self.remaining -= len(buf)
+            self._bytes_remaining -= len(buf)
+        # Here, we'll have between 0 and metaint - 1 left to write so it's safe
+        # to push it all out. If there's no metadata, it's always safe.
         self.output_buffer.write(buf)
 
     def write_icy(self):
         if self.icy:
+            # First tell how long it will be in multiples of 16 bytes
             icylen = chr(len(self.icy) / 16)
             self.output_buffer.write(icylen)
+            # Then write it out
             self.output_buffer.write(self.icy)
+            # Erase the metadata to avoid constantly rebroadcasting. We'll
+            # reset it when we get an update from upstream.
             self._icy = ''
         else:
+            # If no metadata, push out a NULL byte
             self.output_buffer.write('\x00')
 
 
@@ -136,45 +146,53 @@ def icystream(url, output_buffer, forward_metadata=False):
     # Start the request, asking for metadata intervals
     req = requests.get(url, headers={'icy-metadata': 1}, stream=True)
     if not req.ok:
-        print("{code}: {reason}".format(code=req.status_code,
-                                        reason=req.reason),
-              file=fout)
+        print("{}: {}".format(req.status_code, req.reason), file=fout)
         return
-    else:
-        print_headers(req.headers)
 
-    try:
-        interval = int(req.headers['icy-metaint'])
+    # Will we be receiving icy metadata? Forward it.
+    interval = int(req.headers.get('icy-metaint', 0))
+    if interval and forward_metadata:
         output_buffer = MetadataInjector(output_buffer, ICY_METAINT)
-    except KeyError as e:
-        print(e)
-        interval = 0
+    else:
         output_buffer = MetadataInjector(output_buffer, 0)
+    if not interval:
+        print("No metadata recieved from stream."
+              " Ad detection will not work.", file=fout)
+
+    # Buffer the input stream
     stream = BufferedRequest(req)
 
     start_time = time.time()
+
+    print_headers(req.headers)
+
     while True:
         chunk = stream.read(interval)
         raw_meat = parse_meat(stream)
         if raw_meat:
+            # Copy new icy metadata to clients
             output_buffer.icy = raw_meat
             meat = format_meat(raw_meat)
+            print(meat, file=fout)
             if elapsed:
                 print(file=fout)
-            fout.write(meat)
             elapsed = ''
             start_time = time.time()
-        elif meat is None:
+        elif raw_meat is None:
             # Found an ad title in the stream, abort!
             print("Rotten!", file=fout)
             start_time = time.time()
             elapsed = ''
             return
         else:
+            # Erase the old time
             print(chr(8) * len(elapsed), end='', file=fout)
+            # Print the new time
             elapsed = " (" + elapsed_since(start_time) + ")"
             print(elapsed, end='', file=fout)
+        # Get all the UI data out the door
         fout.flush()
+        # Finally write the audio out to the client
         output_buffer.write(chunk)
 
 
