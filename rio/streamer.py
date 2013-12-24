@@ -15,6 +15,7 @@ import requests
 from .config import AD_TITLES as bacteria, ICY_METAINT
 from .utilities import elapsed_since, print_headers
 
+bacteria = tuple(re.compile(bacterium) for bacterium in bacteria)
 
 metadata_regex = re.compile(
     r"StreamTitle='(?P<artist>.*)(?: - )(?P<title>.*?)';")
@@ -23,10 +24,8 @@ stream_title = "{artist} - {title}"
 
 def rotten(meat):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
-    meat = meat.lower()
-    return tuple(bacterium for bacterium in bacteria
-                 if meat  # if no meat, it's not rotten
-                 and (bacterium.lower() in meat or meat in bacterium.lower()))
+    return tuple(bacterium.pattern for bacterium in bacteria
+                 if bacterium.search(meat))
 
 
 def show_rotten(raw, bad, file=sys.stderr):

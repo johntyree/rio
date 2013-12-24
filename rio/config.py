@@ -38,11 +38,8 @@ Lounge = (
 STREAMS = Lounge
 
 Radionomy_ads = (
-    'Musicplus - Jingle',
     'Radionomy - Radionomy',
-    'Joyeux Noel -',
-    'Un Noel plein de musique - Jingles',
-    'Air Lounge Radio - Jingle',
+    '(?i)- jingle$',
     'Sfx - AdArrival',
     'AddictedToRadio',
 )
