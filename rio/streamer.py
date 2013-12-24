@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-# coding: utf-8
+#!/usr/bin/env python2
+# coding: utf8
 
 from __future__ import print_function
 
@@ -173,10 +173,12 @@ def icystream(url, output_buffer, forward_metadata=False):
             # Copy new icy metadata to clients
             output_buffer.icy = raw_meat
             meat = format_meat(raw_meat)
-            print(meat, end='', file=fout)
+            # Put new metadata on a new line
             if elapsed:
                 print(file=fout)
+            print(meat, end='', file=fout)
             elapsed = ''
+            # Reset play timer
             start_time = time.time()
         elif raw_meat is None:
             # Found an ad title in the stream, abort!
