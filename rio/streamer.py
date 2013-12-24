@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import os
 import re
 import sys
 import time
@@ -12,7 +13,7 @@ from math import ceil
 
 import requests
 
-from .config import AD_TITLES as bacteria, ICY_METAINT
+from .config import AD_TITLES as bacteria, ICY_METAINT, OUTPUT_DIR
 from .utilities import elapsed_since, print_headers
 
 bacteria = tuple(re.compile(bacterium) for bacterium in bacteria)
@@ -170,6 +171,8 @@ def icystream(url, output_buffer, forward_metadata=False):
 
     print_headers(req.headers)
 
+    save_file = None
+
     while True:
         chunk = stream.read(interval)
         raw_meat = parse_meat(stream)
@@ -183,6 +186,8 @@ def icystream(url, output_buffer, forward_metadata=False):
                 print(file=fout)
                 start_time = time.time()
                 elapsed = ''
+                if save_file:
+                    save_file.close()
                 return
             else:
                 # Copy new icy metadata to clients
@@ -191,6 +196,11 @@ def icystream(url, output_buffer, forward_metadata=False):
                 meat = format_meat(raw_meat)
                 if elapsed:
                     print(file=fout)
+                if OUTPUT_DIR:
+                    save_file = os.path.join(
+                        OUTPUT_DIR, meat + os.path.extsep + 'mp3')
+                    save_file = open(save_file, 'wb')
+                    print("New file: {}".format(save_file.name), file=fout)
                 print(meat, end='', file=fout)
                 elapsed = ''
                 # Reset play timer
@@ -206,3 +216,5 @@ def icystream(url, output_buffer, forward_metadata=False):
         fout.flush()
         # Finally write the audio out to the client
         output_buffer.write(chunk)
+        if save_file:
+            save_file.write(chunk)
