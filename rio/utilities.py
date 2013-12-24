@@ -1,12 +1,15 @@
 #!/usr/bin/env python2
 # coding: utf8
 
+from __future__ import print_function
+
+import sys
 import time
 
 
-def print_headers(headers):
+def print_headers(headers, file=sys.stdout):
     for key, val in headers.items():
-        print("{key}: {val}".format(key=key, val=val))
+        print("{key}: {val}".format(key=key, val=val), file=file)
 
 
 def elapsed_since(start):
