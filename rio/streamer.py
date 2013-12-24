@@ -93,8 +93,7 @@ class MetadataInjector(object):
         return locals()
     icy = property(**icy())
 
-    def write(self, data):
-        buf = data
+    def write(self, buf):
         # If we have metadata to forward
         if self.metaint >= 0:
             # If the buf len is large enough that we'll need to inject, write
