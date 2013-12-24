@@ -23,14 +23,8 @@ stream_title = "{artist} - {title}"
 
 def rotten(meat):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
-    if meat:
-        for bacterium in bacteria:
-            if bacterium in meat or meat in bacterium:
-                print("{!r} <-> {!r}!".format(meat, bacterium))
-        return any(bacterium in meat or meat in bacterium
-                   for bacterium in bacteria)
-    else:
-        return False
+    return meat and any(bacterium in meat or meat in bacterium
+                        for bacterium in bacteria)
 
 
 def parse_meat(stream):
