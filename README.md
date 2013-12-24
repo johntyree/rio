@@ -35,6 +35,6 @@ Over time, Rio will learn when to switch stations.
 Running
 -------
 
-First `python -m rio.rio`. Then point your client at `http://localhost:1986`
+First `python -m rio.rio`. Then point your client at `http://localhost:1986`.
 (reppin' funky '86!)
 
