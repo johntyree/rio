@@ -19,6 +19,12 @@ PORT = opts.port
 ICY_METAINT = 8192
 DIRECTORY = os.path.expanduser('~/{host}/public/simply'.format(host=HOST))
 
+Ambient = (
+    'http://pub1.di.fm/di_psybient',
+    'http://pub1.di.fm/di_ambient',
+    'http://pub1.di.fm/di_spacedreams',
+)
+
 Lounge = (
     'http://pub1.di.fm/di_lounge',
     'http://pub1.di.fm/di_chillout',
