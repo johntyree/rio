@@ -37,9 +37,6 @@ def parse_meat(stream):
     """ Read the metadata out of an IcyCast stream assuming that the
     metadata begins at byte 0.
 
-    Return the metadata if it's ok.
-    Return None if it looks like a commercial.
-
     """
     meatlen = stream.read(1)
     meatlen = ord(meatlen) * 16
@@ -166,23 +163,26 @@ def icystream(url, output_buffer, forward_metadata=False):
         chunk = stream.read(interval)
         raw_meat = parse_meat(stream)
         if raw_meat:
-            # Copy new icy metadata to clients
-            output_buffer.icy = raw_meat
-            meat = format_meat(raw_meat)
-            # Put new metadata on a new line
-            if elapsed:
-                print(file=fout)
-            print(meat, end='', file=fout)
-            elapsed = ''
-            # Reset play timer
-            start_time = time.time()
-        elif raw_meat is None:
-            # Found an ad title in the stream, abort!
-            print("Rotten!", file=fout)
-            start_time = time.time()
-            elapsed = ''
-            return
+            # We got some new metadata
+            if rotten(raw_meat):
+                # Found an ad title in the stream, abort!
+                print("Rotten!", file=fout)
+                start_time = time.time()
+                elapsed = ''
+                return
+            else:
+                # Copy new icy metadata to clients
+                output_buffer.icy = raw_meat
+                # Put new metadata on a new line
+                meat = format_meat(raw_meat)
+                if elapsed:
+                    print(file=fout)
+                print(meat, end='', file=fout)
+                elapsed = ''
+                # Reset play timer
+                start_time = time.time()
         else:
+            # No new data, still mid-song
             # Erase the old time
             print(chr(8) * len(elapsed), end='', file=fout)
             # Print the new time
