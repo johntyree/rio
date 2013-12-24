@@ -137,6 +137,7 @@ class MetadataInjector(object):
             self.output_buffer.write('\x00')
 
 
+# FIXME: This function is getting seriously crufty...
 def icystream(url, output_buffer, forward_metadata=False):
     """Stream MP3 data, parsing the titles as you go and givng up when a
     commercial is detected.
