@@ -43,7 +43,7 @@ STREAMS = Lounge
 
 Radionomy_ads = (
     'Radionomy - Radionomy',
-    '(?i)- jingle$',
+    r'(?i)- jingles?\s*\d*$',
     'Sfx - AdArrival',
     'AddictedToRadio',
 )
