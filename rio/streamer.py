@@ -23,9 +23,10 @@ stream_title = "{artist} - {title}"
 
 def rotten(meat):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
+    meat = meat.lower()
     return tuple(bacterium for bacterium in bacteria
                  if meat  # if no meat, it's not rotten
-                 and (bacterium in meat or meat in bacterium))
+                 and (bacterium.lower() in meat or meat in bacterium.lower()))
 
 
 def show_rotten(raw, bad, file=sys.stderr):
@@ -80,6 +81,12 @@ class MetadataInjector(object):
         self.metaint = self._bytes_remaining = metaint
         self._icy = ""
 
+    def __del__(self):
+        # Make sure we leave the client stream at the beginning of a chunk to
+        # avoid going out of sync when the next incoming stream starts.
+        if self._bytes_remaining:
+            self.flush()
+
     def icy():
         doc = "The icy metadata, aligned to 16 bytes."
 
@@ -110,6 +117,11 @@ class MetadataInjector(object):
         # to push it all out. If there's no metadata, it's always safe.
         self.output_buffer.write(buf)
 
+    def flush(self):
+        self.output_buffer.write('\x00' * self._bytes_remaining)
+        self.write_icy()
+        self._bytes_remaining = self.metaint
+
     def write_icy(self):
         if self.icy:
             # First tell how long it will be in multiples of 16 bytes
@@ -119,9 +131,9 @@ class MetadataInjector(object):
             self.output_buffer.write(self.icy)
             # Erase the metadata to avoid constantly rebroadcasting. We'll
             # reset it when we get an update from upstream.
-            self._icy = ''
-        else:
-            # If no metadata, push out a NULL byte
+            self._icy = ""
+        elif self.metaint:
+            # If no metadata, but they're expecting some, push out a NULL byte
             self.output_buffer.write('\x00')
 
 
