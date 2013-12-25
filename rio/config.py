@@ -30,20 +30,44 @@ Ambient = (
     'http://pub1.di.fm/di_psybient',
     'http://pub1.di.fm/di_ambient',
     'http://pub1.di.fm/di_spacedreams',
+    'http://pub1.di.fm/di_chillout',
 )
 
 Lounge = (
+    'http://dallas68.somafm.com',
+    'http://listen.radionomy.com/aair-lounge-radio',
+    'http://listen.radionomy.com/air-lounge',
+    'http://206.217.201.137:8059'
     'http://pub1.di.fm/di_lounge',
     'http://pub1.di.fm/di_chillout',
-    'http://listen.radionomy.com/air-lounge',
-    'http://listen.radionomy.com/aair-lounge-radio',
+)
+
+Pound = (
+    'http://pub1.di.fm/di_harddance',
+    'http://pub1.di.fm/di_hardstyle',
+    'http://pub1.di.fm/di_handsup',
+    'http://pub1.di.fm/di_hardcore',
+)
+
+Dance = (
+    'http://pub1.di.fm/di_discohouse',
+    'http://pub1.di.fm/di_funkyhouse',
+    'http://wms-13.streamsrus.com:13930',
+    'http://listen.radionomy.com/aqua-radio-online',
+    'http://listen.radionomy.com/peripou-web-radio',
 )
 
 STREAMS = Lounge
 
+SomaFM_ads = (
+    'Please Donate to support',
+)
+
 Radionomy_ads = (
     'Radionomy - Radionomy',
-    r'(?i)- jingles?\s*\d*$',
+    u"Tte l'équipe vous souhaite un - Jingles",
+    r"Air Lounge Radio - Jingle ?\d*",
+    r'Musicplus - Jingle intro ?\d*$',
     'Sfx - AdArrival',
     'AddictedToRadio',
 )
@@ -55,4 +79,4 @@ DIfm_ads = (
     "There's more to Digitally Imported!",
 )
 
-AD_TITLES = Radionomy_ads + DIfm_ads
+AD_TITLES = set(Radionomy_ads + DIfm_ads + SomaFM_ads)
