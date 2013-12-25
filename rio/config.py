@@ -50,7 +50,7 @@ Radionomy_ads = (
 
 DIfm_ads = (
     'ADWTAG',
-    'www.di.fm/jobs',
+    r'www\.di\.fm/jobs',
     'Choose premium for the best audio experience',
     "There's more to Digitally Imported!",
 )
