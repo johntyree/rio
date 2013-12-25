@@ -3,7 +3,6 @@
 
 from __future__ import print_function
 
-import sys
 import time
 
 
@@ -39,9 +38,8 @@ class Duplexer(object):
         return "{}: {!s}".format(self.__class__, self.children)
 
 
-def print_dict(d, file=sys.stdout):
-    for key, val in d.items():
-        print("{key}: {val}".format(key=key, val=val), file=file)
+def render_dict(d):
+    return '\n'.join("{}: {}".format(key, val) for key, val in d.items())
 
 
 def render_headers(headers):
