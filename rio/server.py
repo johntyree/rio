@@ -12,7 +12,7 @@ from requests import ConnectionError
 
 from .config import HOST, PORT, STREAMS, ICY_METAINT
 from .streamer import icystream
-from .utilities import print_headers
+from .utilities import render_headers
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -20,9 +20,7 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         # FIXME: When the content-type changes between streams, we're probably
         # boned.
-        print(file=sys.stderr)
-        print_headers(self.headers, file=sys.stderr)
-        print(file=sys.stderr)
+        print("\n{}\n".format(render_headers(self.headers)), file=sys.stderr)
         forward = 'icy-metadata' in self.headers
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')

@@ -39,9 +39,20 @@ class Duplexer(object):
         return "{}: {!s}".format(self.__class__, self.children)
 
 
-def print_headers(headers, file=sys.stdout):
-    for key, val in headers.items():
+def print_dict(d, file=sys.stdout):
+    for key, val in d.items():
         print("{key}: {val}".format(key=key, val=val), file=file)
+
+
+def render_headers(headers):
+    msgs = (
+        ('icy-name', "Station: {}"),
+        ('icy-genre', "Genre: {}"),
+        ('icy-br', "Bitrate: {}"),
+    )
+    txt = '\n'.join(msg.format(headers[hdr])
+                    for hdr, msg in msgs if hdr in headers)
+    return txt
 
 
 def elapsed_since(start):

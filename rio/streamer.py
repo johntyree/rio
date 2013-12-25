@@ -14,7 +14,7 @@ from math import ceil
 import requests
 
 from .config import AD_TITLES as bacteria, ICY_METAINT, OUTPUT_DIR
-from .utilities import elapsed_since, print_headers
+from .utilities import elapsed_since, render_headers
 
 bacteria = tuple(re.compile(bacterium) for bacterium in bacteria)
 
@@ -170,7 +170,7 @@ def icystream(url, output_buffer, forward_metadata=False):
 
     start_time = time.time()
 
-    print_headers(req.headers)
+    print(render_headers(req.headers))
 
     save_file = None
 
