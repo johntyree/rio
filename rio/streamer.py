@@ -69,6 +69,20 @@ class BufferedRequest(object):
         ret, self.buf = self.buf[:size], self.buf[size:]
         return ret
 
+    def appendleft(self, data):
+        self.buf = data + self.buf
+
+    def peek(self, size):
+        """ Return the first size bytes of the stream without removal.
+
+        a = buf.peek(10)
+        b = buf.read(10)
+        assert a == b  # succeeds
+        """
+        val = self.read(size)
+        self.appendleft(val)
+        return val
+
 
 class MetadataInjector(object):
     """ A wrapper around an output buffer that inserts ICY format metadata
@@ -137,6 +151,24 @@ class MetadataInjector(object):
             self.output_buffer.write('\x00')
 
 
+def build_headers(buf):
+    """ Read the stream until the first blank line, building up a header
+    dictionary.
+
+    """
+    hdrs = requests.structures.CaseInsensitiveDict()
+    data = buf.read(4096)
+    while True:
+        line, _, data = data.partition('\r\n')
+        if not line:
+            buf.appendleft(data)
+            break
+        elif ':' in line:
+            key, _, val = line.partition(':')
+            hdrs[key] = val
+    return hdrs
+
+
 # FIXME: This function is getting seriously crufty...
 def icystream(url, output_buffer, forward_metadata=False):
     """Stream MP3 data, parsing the titles as you go and givng up when a
@@ -155,6 +187,15 @@ def icystream(url, output_buffer, forward_metadata=False):
         print("{}: {}".format(req.status_code, req.reason), file=fout)
         return
 
+    # Buffer the input stream
+    stream = BufferedRequest(req)
+
+    # If we got no headers back, assume that they are in-line. Everything
+    # before the blank line is header, everything after is data
+    if not req.headers:
+        hdrs = build_headers(stream)
+        req.headers = hdrs
+
     # Will we be receiving icy metadata? Forward it.
     interval = int(req.headers.get('icy-metaint', 0))
     if interval and forward_metadata:
@@ -164,9 +205,6 @@ def icystream(url, output_buffer, forward_metadata=False):
     if not interval:
         print("No metadata recieved from stream."
               " Ad detection will not work.", file=fout)
-
-    # Buffer the input stream
-    stream = BufferedRequest(req)
 
     start_time = time.time()
 
