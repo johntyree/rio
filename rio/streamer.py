@@ -200,8 +200,11 @@ def icystream(url, output_buffer, forward_metadata=False):
                 if OUTPUT_DIR:
                     save_file = os.path.join(
                         OUTPUT_DIR, meat + os.path.extsep + 'mp3')
-                    save_file = open(save_file, 'wb')
-                    print("New file: {}".format(save_file.name), file=fout)
+                    if not os.path.exists(save_file):
+                        save_file = open(save_file, 'wb')
+                        print("New file: {}".format(save_file.name), file=fout)
+                    else:
+                        save_file = None
                 print(meat, end='', file=fout)
                 elapsed = ''
                 # Reset play timer
