@@ -42,6 +42,34 @@ def render_dict(d):
     return '\n'.join("{}: {}".format(key, val) for key, val in d.items())
 
 
+def deep_apply(f, data):
+    if isinstance(data, dict):
+        newdata = {}
+        for k, v in data.iteritems():
+            newdata[deep_apply(f, k)] = deep_apply(f, v)
+        return newdata
+    elif isinstance(data, unicode) or isinstance(data, str):
+        return f(data)
+    elif hasattr(data, '__iter__'):
+        typ = type(data)
+        return typ(deep_apply(f, e) for e in data)
+    else:
+        return data
+
+
+def unicode_damnit(data):
+    def convert(data):
+        try:
+            data = unicode(data, encoding='utf8')
+        except:
+            try:
+                data = unicode(data, encoding='latin1')
+            except:
+                pass
+        return data
+    return deep_apply(convert, data)
+
+
 def render_headers(headers):
     msgs = (
         ('icy-name', "Station: {}"),
