@@ -114,10 +114,11 @@
             "di_hardcore",
         ],
         "lounge": [
-            "beatlounge radio",
             "aair-lounge-radio",
-            "air-lounge",
             "di_lounge",
+            "air-lounge",
+            "di_chillout",
+            "beatlounge radio",
         ],
         "ambient": [
             "di_psybient",
