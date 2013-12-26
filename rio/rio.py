@@ -1,16 +1,17 @@
 #!/usr/bin/env python2
 # coding: utf8
 
-import sys
-
-from .config import HOST, PORT
+from .config import RioConfig
 from .server import serve_on_port
 
 
 def main():
     """Run main."""
+    config = RioConfig()
+    port = config.port
+    host = config.host
 
-    serve_on_port(host=HOST, port=PORT)
+    serve_on_port(host, port)
 
     return 0
 

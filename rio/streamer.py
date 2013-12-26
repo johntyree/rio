@@ -13,17 +13,15 @@ from math import ceil
 
 import requests
 
-from .config import AD_TITLES as bacteria, ICY_METAINT, OUTPUT_DIR
-from .utilities import elapsed_since, render_headers
-
-bacteria = tuple(re.compile(bacterium) for bacterium in bacteria)
+from .utilities import elapsed_since, render_headers, unicode_damnit
+from .config import RioConfig
 
 metadata_regex = re.compile(
-    r"StreamTitle='(?P<artist>.*)(?: - )(?P<title>.*?)';")
-stream_title = "{artist} - {title}"
+    ur"StreamTitle='(?P<artist>.*)(?: - )(?P<title>.*?)';")
+stream_title = u"{artist} - {title}"
 
 
-def rotten(meat):
+def rotten(meat, bacteria):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
     return tuple(bacterium.pattern for bacterium in bacteria
                  if bacterium.search(meat))
@@ -42,15 +40,16 @@ def parse_meat(stream):
     """
     meatlen = stream.read(1)
     meatlen = ord(meatlen) * 16
-    return stream.read(meatlen).strip()
+    return unicode_damnit(stream.read(meatlen).strip())
 
 
 def format_meat(meat):
+    meat = meat.decode('utf8')
     match = metadata_regex.search(meat)
     if match:
         return stream_title.format(**match.groupdict())
     else:
-        return "Unknown format: {!r}".format(meat)
+        return u"Unknown format: {!r}".format(meat)
 
 
 class BufferedRequest(object):
@@ -94,6 +93,7 @@ class MetadataInjector(object):
         self.output_buffer = output_buffer
         self.metaint = self._bytes_remaining = metaint
         self._icy = ""
+        self._last_icy = ""
 
     def __del__(self):
         # Make sure we leave the client stream at the beginning of a chunk to
@@ -108,8 +108,11 @@ class MetadataInjector(object):
             return self._icy
 
         def fset(self, value):
+            # Convert to utf8
+            value = unicode_damnit(value).encode('utf8')
             # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
+            self._last_icy = self._icy
             self._icy = "{value:\x00<{icylen}s}".format(value=value,
                                                         icylen=icylen)
         return locals()
@@ -145,6 +148,7 @@ class MetadataInjector(object):
             self.output_buffer.write(self.icy)
             # Erase the metadata to avoid constantly rebroadcasting. We'll
             # reset it when we get an update from upstream.
+            self._last_icy = self._icy
             self._icy = ""
         elif self.metaint:
             # If no metadata, but they're expecting some, push out a NULL byte
@@ -170,54 +174,68 @@ def build_headers(buf):
 
 
 # FIXME: This function is getting seriously crufty...
-def icystream(url, output_buffer, forward_metadata=False):
+def icystream(stream, output_buffer, config=None):
     """Stream MP3 data, parsing the titles as you go and givng up when a
     commercial is detected.
 
     """
 
-    print("Starting:", url)
+    config = config or RioConfig()
+
+    print("Starting {!s}".format(stream))
 
     elapsed = ''
     fout = sys.stdout
 
     # Start the request, asking for metadata intervals
-    req = requests.get(url, headers={'icy-metadata': 1}, stream=True)
+    req = requests.get(stream.url, headers={'icy-metadata': 1}, stream=True)
     if not req.ok:
         print("{}: {}".format(req.status_code, req.reason), file=fout)
         return
 
     # Buffer the input stream
-    stream = BufferedRequest(req)
+    stream.data = BufferedRequest(req)
 
     # If we got no headers back, assume that they are in-line. Everything
     # before the blank line is header, everything after is data
     if not req.headers:
-        hdrs = build_headers(stream)
+        hdrs = build_headers(stream.data)
         req.headers = hdrs
 
     # Will we be receiving icy metadata? Forward it.
     interval = int(req.headers.get('icy-metaint', 0))
-    if interval and forward_metadata:
-        output_buffer = MetadataInjector(output_buffer, ICY_METAINT)
+    if interval and config.forward_metadata:
+        output_buffer = MetadataInjector(output_buffer, config.ICY_METAINT)
     else:
         output_buffer = MetadataInjector(output_buffer, 0)
     if not interval:
-        print("No metadata recieved from stream."
-              " Ad detection will not work.", file=fout)
+        print(u"No metadata recieved from stream."
+              u" Ad detection will not work.", file=fout)
 
     start_time = time.time()
 
     print(render_headers(req.headers))
+    print(u"Networks: {!r}".format(stream.networks))
+    bacteria = config.bacteria_for_stream(stream)
+    print(u"Ad Sentinels: {!r}".format([b.pattern for b in bacteria]))
 
     save_file = None
 
+    OUTPUT_DIR = config.output_directory
+
     while True:
+        updated = config.update()
         chunk = stream.read(interval)
         raw_meat = parse_meat(stream)
+        if updated:
+            bacteria = config.bacteria_for_stream(stream)
+            print(u"\nAd Sentinels: {!r}".format(
+                [b.pattern for b in bacteria]))
+            print(format_meat(output_buffer._last_icy), end='', file=fout)
+            elapsed = ''
         if raw_meat:
             # We got some new metadata
-            bad_meat = rotten(raw_meat)
+            bad_meat = rotten(raw_meat, bacteria)
             if bad_meat:
                 # Found an ad title in the stream, abort!
                 print(file=fout)
@@ -232,7 +250,7 @@ def icystream(url, output_buffer, forward_metadata=False):
                 # Copy new icy metadata to clients
                 output_buffer.icy = raw_meat
                 # Put new metadata on a new line
-                meat = format_meat(raw_meat)
+                meat = format_meat(output_buffer.icy)
                 if elapsed:
                     print(file=fout)
                 if OUTPUT_DIR:
