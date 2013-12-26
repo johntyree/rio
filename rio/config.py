@@ -114,9 +114,10 @@ class RioConfig(object):
             # Rotate the list to the last one
             try:
                 previous = [s.url for s in self.streams].index(lasturl)
+                nextidx = (previous + 1) % len(self.streams)
             except ValueError:
-                previous = 0
-            streams = self.streams[previous:] + self.streams[:previous]
+                nextidx = 0
+            streams = self.streams[nextidx:] + self.streams[:nextidx]
             for stream in itertools.cycle(streams):
                 lasturl = stream.url
                 yield stream
