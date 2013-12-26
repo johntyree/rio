@@ -118,6 +118,10 @@ class MetadataInjector(object):
         return locals()
     icy = property(**icy())
 
+    @property
+    def last_icy(self):
+        return self._last_icy
+
     def write(self, buf):
         # If we have metadata to forward
         if self.metaint >= 0:
@@ -231,7 +235,7 @@ def icystream(stream, output_buffer, config=None):
             bacteria = config.bacteria_for_stream(stream)
             print(u"\nAd Sentinels: {!r}".format(
                 [b.pattern for b in bacteria]))
-            print(format_meat(output_buffer._last_icy), end='', file=fout)
+            print(format_meat(output_buffer.last_icy), end='', file=fout)
             elapsed = ''
         if raw_meat:
             # We got some new metadata
