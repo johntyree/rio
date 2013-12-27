@@ -291,7 +291,9 @@ def icystream(stream, output_buffer, config=None):
                     save_file_name = os.path.join(
                         OUTPUT_DIR, meat + os.path.extsep + u'mp3')
                     save_this_file = all((not os.path.exists(save_file_name),
-                                          output_buffer.last_icy))
+                                          output_buffer.last_icy,
+                                          not meat.startswith('Unknown format')
+                                          ))
                     if save_this_file:
                         save_file = open(save_file_name.encode('utf8'), 'wb')
                         save_file = CompleteFileWriter(save_file)
