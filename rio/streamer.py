@@ -286,14 +286,20 @@ def icystream(stream, output_buffer, config=None):
                 if elapsed:
                     print(file=fout)
                 if OUTPUT_DIR:
+                    try:
+                        os.makedirs(OUTPUT_DIR)
+                    except OSError:
+                        pass
                     if save_file:
                         save_file.close()
                     save_file_name = os.path.join(
                         OUTPUT_DIR, meat + os.path.extsep + u'mp3')
-                    save_this_file = all((not os.path.exists(save_file_name),
-                                          output_buffer.last_icy,
-                                          not meat.startswith('Unknown format')
-                                          ))
+                    save_this_file = all((
+                        os.path.isdir(OUTPUT_DIR),
+                        not os.path.exists(save_file_name),
+                        output_buffer.last_icy,
+                        not meat.startswith('Unknown format'),
+                    ))
                     if save_this_file:
                         save_file = open(save_file_name.encode('utf8'), 'wb')
                         save_file = CompleteFileWriter(save_file)
