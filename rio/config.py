@@ -73,7 +73,7 @@ class RioConfig(object):
     _config = None
     ICY_METAINT = 8192
     # The number of seconds required before something isn't an ad
-    min_ad_length, max_ad_length = 3, 120
+    min_ad_length, max_ad_length = 2, 120
     forward_metadata = False
 
     def __init__(self, argv=sys.argv, config_file=None):
@@ -107,7 +107,7 @@ class RioConfig(object):
         msg = "New bacterium for networks {}: {!r}"
         print(msg.format(networks, bacterium))
         for net in networks:
-            self._config['ad'][net].append(bacterium)
+            self._config['ad'].setdefault(net, []).append(bacterium)
         self.write_config()
 
     @property
@@ -121,7 +121,7 @@ class RioConfig(object):
     def bacteria_for_stream(self, stream):
         bacteria = {bacterium
                     for net in stream.networks
-                    for bacterium in self.bacteria[net]}
+                    for bacterium in self.bacteria.get(net, [])}
         return bacteria
 
     @property

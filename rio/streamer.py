@@ -252,7 +252,7 @@ def icystream(stream, output_buffer, config=None):
             min_ad = config.min_ad_length
             max_ad = config.max_ad_length
             new_commercial = all((
-                min_ad < end_time - start_time < max_ad,
+                min_ad <= end_time - start_time <= max_ad,
                 output_buffer._last_icy
             ))
             if new_commercial:
