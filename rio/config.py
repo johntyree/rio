@@ -86,6 +86,28 @@ class RioConfig(object):
         self.age = None
         self.update()
 
+    def render_config(self):
+        return json.dumps(self._config, indent=4)
+
+    def write_config(self, fname=None):
+        if fname is None:
+            fname = self.config_file
+        with open(fname, 'w') as fout:
+            fout.write(self.render_config())
+        # Force an update
+        self.age = 0
+
+    @property
+    def config_age(self):
+        return os.stat(self.config_file).st_mtime
+
+    def add_bacterium(self, networks, bacterium):
+        msg = "New bacterium for networks {}: {!r}"
+        print(msg.format(networks, bacterium))
+        for net in networks:
+            self._config['ad'][net].append(bacterium)
+        self.write_config()
+
     @property
     def bacteria(self):
         self.update()
@@ -126,11 +148,10 @@ class RioConfig(object):
                     break
 
     def update(self):
-        config_age = os.stat(self.config_file).st_mtime
-        if config_age == self.age:
+        if self.config_age <= self.age:
             return False
         self._config = load_config(self.config_file)
-        self.age = config_age
+        self.age = self.config_age
         self._bacteria = None
         self._streams = None
         return self.age
