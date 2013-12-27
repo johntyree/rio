@@ -237,7 +237,7 @@ def icystream(stream, output_buffer, config=None):
             bacteria = config.bacteria_for_stream(stream)
             print(u"\nAd Sentinels: {!r}".format(
                 [b.pattern for b in bacteria]), file=fout)
-            print(format_meat(output_buffer.last_icy), end='', file=fout)
+            print(format_meat(output_buffer._current_icy), end='', file=fout)
             elapsed = ''
 
         # Save the config if it has been updated
