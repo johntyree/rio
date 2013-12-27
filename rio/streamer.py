@@ -94,6 +94,7 @@ class MetadataInjector(object):
         self.metaint = self._bytes_remaining = metaint
         self._icy = ""
         self._last_icy = ""
+        self._current_icy = ""
 
     def __del__(self):
         # Make sure we leave the client stream at the beginning of a chunk to
@@ -112,7 +113,7 @@ class MetadataInjector(object):
             value = unicode_damnit(value).encode('utf8')
             # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
-            self._last_icy = self._icy
+            self._last_icy = self._current_icy
             self._icy = "{value:\x00<{icylen}s}".format(value=value,
                                                         icylen=icylen)
         return locals()
@@ -152,7 +153,8 @@ class MetadataInjector(object):
             self.output_buffer.write(self.icy)
             # Erase the metadata to avoid constantly rebroadcasting. We'll
             # reset it when we get an update from upstream.
-            self._last_icy = self._icy
+            self._last_icy = self._current_icy
+            self._current_icy = self._icy
             self._icy = ""
         elif self.metaint:
             # If no metadata, but they're expecting some, push out a NULL byte
@@ -234,21 +236,42 @@ def icystream(stream, output_buffer, config=None):
         if updated:
             bacteria = config.bacteria_for_stream(stream)
             print(u"\nAd Sentinels: {!r}".format(
-                [b.pattern for b in bacteria]))
+                [b.pattern for b in bacteria]), file=fout)
             print(format_meat(output_buffer.last_icy), end='', file=fout)
             elapsed = ''
+
+        # Save the config if it has been updated
+        if config.config_age < config.age:
+            config.write_config()
         if raw_meat:
             # We got some new metadata
+
+            # If this song is complete but very short, it's
+            # probably a commercial
+            end_time = time.time()
+            min_song = config.minimum_song_length
+            min_ad = config.minimum_ad_length
+            new_commercial = all((
+                min_ad < end_time - start_time < min_song,
+                output_buffer._last_icy
+            ))
+            if new_commercial:
+                if elapsed:
+                    print('', file=fout)
+                config.add_bacterium(stream.networks,
+                                     format_meat(output_buffer._current_icy))
+
             bad_meat = rotten(raw_meat, bacteria)
             if bad_meat:
                 # Found an ad title in the stream, abort!
                 print(file=fout)
                 show_rotten(raw_meat, bad_meat, file=fout)
                 print(file=fout)
-                start_time = time.time()
+
                 elapsed = ''
                 if save_file:
                     save_file.close()
+
                 return
             else:
                 # Copy new icy metadata to clients

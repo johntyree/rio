@@ -72,6 +72,9 @@ class RioConfig(object):
     _args = None
     _config = None
     ICY_METAINT = 8192
+    # The number of seconds required before something isn't an ad
+    minimum_song_length = 60
+    minimum_ad_length = 5
     forward_metadata = False
 
     def __init__(self, argv=sys.argv, config_file=None):
