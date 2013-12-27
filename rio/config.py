@@ -20,7 +20,10 @@ def load_config(fname):
         data = [l.decode('utf8')
                 for l in f
                 if not any(l.strip().startswith(s) for s in skips)]
-    data = persistently_apply(json.loads, args=(u''.join(data),))
+    try:
+        data = persistently_apply(json.loads, args=(u''.join(data),))
+    except ValueError:
+        data = {}
     return unicode_damnit(data)
 
 
@@ -152,8 +155,10 @@ class RioConfig(object):
     def update(self):
         if self.config_age <= self.age:
             return False
-        self._config = load_config(self.config_file)
-        self.age = self.config_age
-        self._bacteria = None
-        self._streams = None
+        new_config = load_config(self.config_file)
+        if new_config:
+            self._config = new_config
+            self.age = self.config_age
+            self._bacteria = None
+            self._streams = None
         return self.age
