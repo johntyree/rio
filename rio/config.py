@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 # coding: utf8
 
-import ast
+import json
 import itertools
 import optparse
 import os
@@ -10,16 +10,17 @@ import sys
 
 from utilities import unicode_damnit
 
-default_config = os.path.join(os.path.dirname(__file__), 'config_data.py')
+default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 
 
 def load_config(fname):
     data = []
+    skips = ('//',)
     with open(fname) as f:
-        for line in f:
-            if not any(line.strip().startswith(s) for s in ('from', '#')):
-                data.append(line.decode('utf8'))
-    data = ast.literal_eval(u''.join(data))
+        data = [l.decode('utf8')
+                for l in f
+                if not any(l.strip().startswith(s) for s in skips)]
+    data = json.loads(u''.join(data))
     return unicode_damnit(data)
 
 
