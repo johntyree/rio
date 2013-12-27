@@ -6,6 +6,16 @@ from __future__ import print_function
 import time
 
 
+def persistently_apply(f, args=(), kwargs={}, tries=10):
+    tries -= 1
+    while tries:
+        try:
+            return f(*args, **kwargs)
+        except:
+            tries -= 1
+    return f(*args, **kwargs)
+
+
 class Duplexer(object):
     ''' A collection which delegates attribute getting and setting to
     children.'''

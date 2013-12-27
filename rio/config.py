@@ -8,7 +8,7 @@ import os
 import re
 import sys
 
-from utilities import unicode_damnit
+from utilities import unicode_damnit, persistently_apply
 
 default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 
@@ -20,7 +20,7 @@ def load_config(fname):
         data = [l.decode('utf8')
                 for l in f
                 if not any(l.strip().startswith(s) for s in skips)]
-    data = json.loads(u''.join(data))
+    data = persistently_apply(json.loads, args=(u''.join(data),))
     return unicode_damnit(data)
 
 
