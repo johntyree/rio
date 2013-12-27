@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 
+import os
 import time
 
 
@@ -14,6 +15,20 @@ def persistently_apply(f, args=(), kwargs={}, tries=10):
         except:
             tries -= 1
     return f(*args, **kwargs)
+
+
+class CompleteFileWriter(object):
+    def __init__(self, fout):
+        self.fout = fout
+
+    def __getattr__(self, attr):
+        return getattr(self.fout, attr)
+
+    def __del__(self):
+        if not self.fout.closed:
+            self.fout.close()
+            print("\nRemoving partial file: {!r}".format(self.fout.name))
+            os.unlink(self.fout.name)
 
 
 class Duplexer(object):

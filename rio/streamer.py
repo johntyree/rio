@@ -14,7 +14,8 @@ from math import ceil
 
 import requests
 
-from .utilities import elapsed_since, render_headers, unicode_damnit
+from .utilities import (
+    elapsed_since, render_headers, unicode_damnit, CompleteFileWriter)
 from .config import RioConfig
 
 metadata_regex = re.compile(
@@ -293,6 +294,7 @@ def icystream(stream, output_buffer, config=None):
                                           output_buffer.last_icy))
                     if save_this_file:
                         save_file = open(save_file_name.encode('utf8'), 'wb')
+                        save_file = CompleteFileWriter(save_file)
                         print("New file: {}".format(save_file.name), file=fout)
                     else:
                         save_file = None
