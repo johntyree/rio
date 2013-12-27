@@ -249,10 +249,10 @@ def icystream(stream, output_buffer, config=None):
             # If this song is complete but very short, it's
             # probably a commercial
             end_time = time.time()
-            min_song = config.minimum_song_length
-            min_ad = config.minimum_ad_length
+            min_ad = config.min_ad_length
+            max_ad = config.max_ad_length
             new_commercial = all((
-                min_ad < end_time - start_time < min_song,
+                min_ad < end_time - start_time < max_ad,
                 output_buffer._last_icy
             ))
             if new_commercial:
