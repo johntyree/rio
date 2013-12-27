@@ -260,8 +260,8 @@ def icystream(stream, output_buffer, config=None):
                 if OUTPUT_DIR:
                     save_file = os.path.join(
                         OUTPUT_DIR, meat + os.path.extsep + 'mp3')
-                    save_this_file = all(not os.path.exists(save_file),
-                                         output_buffer.last_icy)
+                    save_this_file = all((not os.path.exists(save_file),
+                                          output_buffer.last_icy))
                     if save_this_file:
                         save_file = open(save_file, 'wb')
                         print("New file: {}".format(save_file.name), file=fout)
