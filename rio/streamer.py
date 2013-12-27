@@ -49,9 +49,11 @@ def format_meat(meat):
     meat = meat.decode('utf8')
     match = metadata_regex.search(meat)
     if match:
-        return stream_title.format(**match.groupdict())
+        meat = stream_title.format(**match.groupdict())
     else:
-        return u"Unknown format: {!r}".format(meat)
+        meat = u"Unknown format: {!r}".format(meat)
+    meat = meat.replace(u'\x00', u'').strip()
+    return meat
 
 
 class BufferedRequest(object):
