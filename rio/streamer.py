@@ -5,6 +5,7 @@ from __future__ import print_function
 
 import os
 import re
+import socket
 import sys
 import time
 import urllib2
@@ -99,8 +100,11 @@ class MetadataInjector(object):
     def __del__(self):
         # Make sure we leave the client stream at the beginning of a chunk to
         # avoid going out of sync when the next incoming stream starts.
-        if self._bytes_remaining:
-            self.flush()
+        try:
+            if self._bytes_remaining:
+                self.flush()
+        except socket.error:
+            pass
 
     def icy():
         doc = "The icy metadata, aligned to 16 bytes."
