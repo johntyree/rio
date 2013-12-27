@@ -27,9 +27,10 @@ project is in its infancy.
 Configuration
 -------------
 
-Edit `config.py` to list the `STREAMS` and `AD_TITLES` that you know already.
-As you hear an ad playing, note the title displayed and add it to `AD_TITLES`.
-Over time, Rio will learn when to switch stations.
+Edit `config_data.json` to list the `stream`s and `ad`s that you know already.
+As you hear an ad playing, note the title displayed and add it to `ad[network]`
+. Rio will automatically flag a title if it looks too short to be a song. Over
+time, Rio will learn when to switch stations.
 
 
 Running
