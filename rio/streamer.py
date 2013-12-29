@@ -59,7 +59,7 @@ def format_meat(meat):
 
 
 class BufferedRequest(object):
-    """ A buffer for a `requests.request` object, providing a read(size)
+    """ A buffer for a file-like object, providing a read(size)
     method similar to other buffer IO.
 
     """

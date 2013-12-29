@@ -7,8 +7,6 @@ import sys
 from SocketServer import ForkingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
-from requests import ConnectionError
-
 from .config import RioConfig
 from .streamer import icystream
 from .utilities import render_dict, unicode_damnit
@@ -31,8 +29,6 @@ class Handler(BaseHTTPRequestHandler):
         try:
             for stream in config.cycle_streams():
                 icystream(stream, self.wfile, config=config)
-        except ConnectionError as e:
-            print(e)
         except KeyboardInterrupt:
             pass
 
