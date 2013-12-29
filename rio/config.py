@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 # coding: utf8
 
+from __future__ import print_function
+
 import json
 import itertools
 import optparse
@@ -22,7 +24,8 @@ def load_config(fname):
                 if not any(l.strip().startswith(s) for s in skips)]
     try:
         data = persistently_apply(json.loads, args=(u''.join(data),))
-    except ValueError:
+    except ValueError as e:
+        print("Could not load config: {}".format(e))
         data = {}
     return unicode_damnit(data)
 
