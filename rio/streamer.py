@@ -10,7 +10,7 @@ import sys
 import time
 from math import ceil
 
-import requests
+import urllib
 
 from .utilities import (
     elapsed_since, render_headers, unicode_damnit, CompleteFileWriter)
@@ -59,19 +59,34 @@ class BufferedRequest(object):
     method similar to other buffer IO.
 
     """
-    def __init__(self, req, chunksize=1024*10):
-        self.content_iterator = req.iter_content(chunksize)
+    def __init__(self, url=None, headers=None, chunksize=1024*10):
+        self.chunksize = chunksize
         self.buf = ''
+        if url:
+            self.get(url, headers)
+
+    def get(self, url, headers=None):
+        o = urllib.FancyURLopener()
+        if headers:
+            for k, v in headers.items():
+                o.addheader(k, v)
+        self.req = o.open(url)
+        return self
+
+    @property
+    def ok(self):
+        return 200 <= self.req.code < 300
 
     def read(self, size):
         while size > len(self.buf):
             # FIXME: Use some kind of sensible fifo
-            self.buf += next(self.content_iterator)
+            self.buf += self.req.read(self.chunksize)
         ret, self.buf = self.buf[:size], self.buf[size:]
         return ret
 
     def appendleft(self, data):
         self.buf = data + self.buf
+        return self
 
     def peek(self, size):
         """ Return the first size bytes of the stream without removal.
@@ -171,7 +186,7 @@ def build_headers(buf):
     dictionary.
 
     """
-    hdrs = requests.structures.CaseInsensitiveDict()
+    hdrs = {}
     data = buf.read(4096)
     while True:
         line, _, data = data.partition('\r\n')
@@ -198,14 +213,13 @@ def icystream(stream, output_buffer, config=None):
     elapsed = ''
     fout = sys.stdout
 
-    # Start the request, asking for metadata intervals
-    req = requests.get(stream.url, headers={'icy-metadata': 1}, stream=True)
-    if not req.ok:
-        print("{}: {}".format(req.status_code, req.reason), file=fout)
+    # Start the request, asking for metadata intervals and buffer
+    # the input stream
+    stream.data = BufferedRequest(stream.url, headers={'icy-metadata': 1})
+    req = stream.data.req
+    if not stream.data.ok:
+        print("HTTP Error code {}".format(req.code), file=fout)
         return
-
-    # Buffer the input stream
-    stream.data = BufferedRequest(req)
 
     # If we got no headers back, assume that they are in-line. Everything
     # before the blank line is header, everything after is data
