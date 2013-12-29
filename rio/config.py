@@ -10,7 +10,7 @@ import os
 import re
 import sys
 
-from utilities import unicode_damnit, persistently_apply
+from .utilities import unicode_damnit, persistently_apply
 
 default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 
