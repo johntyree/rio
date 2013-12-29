@@ -84,15 +84,16 @@ def deep_apply(f, data):
 
 def unicode_damnit(data):
     def convert(data):
-        try:
-            data = unicode(data, encoding='utf8')
-        except Exception as e:
-            print('0:', e)
+        if type(data) != unicode:
             try:
-                data = unicode(data, encoding='latin1')
+                data = unicode(data, encoding='utf8')
             except Exception as e:
-                print('1:', e)
-                pass
+                print('0:', e)
+                try:
+                    data = unicode(data, encoding='latin1')
+                except Exception as e:
+                    print('1:', e)
+                    pass
         return data
     return deep_apply(convert, data)
 
