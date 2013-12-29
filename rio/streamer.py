@@ -8,8 +8,6 @@ import re
 import socket
 import sys
 import time
-import urllib2
-urlparse, urljoin = urllib2.urlparse.urlparse, urllib2.urlparse.urljoin
 from math import ceil
 
 import requests
