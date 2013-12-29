@@ -18,7 +18,7 @@ default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 def load_config(fname):
     data = []
     skips = ('//',)
-    with open(fname) as f:
+    with open(fname, 'rb') as f:
         data = [l.decode('utf8')
                 for l in f
                 if not any(l.strip().startswith(s) for s in skips)]

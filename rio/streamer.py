@@ -44,7 +44,10 @@ def parse_meat(stream):
 
 
 def format_meat(meat):
-    meat = meat.decode('utf8')
+    try:
+        meat = meat.decode('utf8')
+    except AttributeError:
+        pass
     match = artist_title_regex.search(meat)
     if match:
         data = match.groupdict()
