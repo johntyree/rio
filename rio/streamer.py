@@ -16,12 +16,13 @@ except ImportError:
     from urllib.request import FancyURLopener
 
 from .utilities import (
-    elapsed_since, render_headers, unicode_damnit, CompleteFileWriter)
+    elapsed_since, render_headers, unicode_damnit,
+    CompleteFileWriter)
 from .config import RioConfig
 
 artist_title_regex = re.compile(
-    br"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
-stream_title = b"{artist} - {title}"
+    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
+stream_title = u"{artist} - {title}"
 
 
 def rotten(meat, bacteria):
@@ -47,16 +48,17 @@ def parse_meat(stream):
 
 
 def format_meat(meat):
+    meat = unicode_damnit(meat)
     match = artist_title_regex.search(meat)
     if match:
         data = match.groupdict()
         if data['artist']:
             meat = stream_title.format(**data)
         else:
-            meat = '{title}'.format(**data)
+            meat = u'{title}'.format(**data)
     else:
-        meat = "Unknown format: {!r}".format(meat)
-    meat = meat.replace(u'\x00', u'').strip().decode('utf8')
+        meat = u"Unknown format: {!r}".format(meat)
+    meat = meat.replace(u'\x00', u'').strip()
     return meat
 
 
@@ -139,9 +141,9 @@ class MetadataInjector(object):
             value = unicode_damnit(value).encode('utf8')
             # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
+            padding = icylen - len(value)
             self._last_icy = self._current_icy
-            self._icy = b"{value:\x00<{icylen}s}".format(value=value,
-                                                         icylen=icylen)
+            self._icy = value + b'\x00' * padding
         return locals()
     icy = property(**icy())
 
