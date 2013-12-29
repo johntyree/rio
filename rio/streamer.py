@@ -168,14 +168,14 @@ class MetadataInjector(object):
         self.output_buffer.write(buf)
 
     def flush(self):
-        self.output_buffer.write('\x00' * self._bytes_remaining)
+        self.output_buffer.write(b'\x00' * self._bytes_remaining)
         self.write_icy()
         self._bytes_remaining = self.metaint
 
     def write_icy(self):
         if self.icy:
             # First tell how long it will be in multiples of 16 bytes
-            icylen = chr(len(self.icy) // 16)
+            icylen = chr(len(self.icy) // 16).encode('utf8')
             self.output_buffer.write(icylen)
             # Then write it out
             self.output_buffer.write(self.icy)
@@ -186,7 +186,7 @@ class MetadataInjector(object):
             self._icy = b""
         elif self.metaint:
             # If no metadata, but they're expecting some, push out a NULL byte
-            self.output_buffer.write('\x00')
+            self.output_buffer.write(b'\x00')
 
 
 def build_headers(buf):
