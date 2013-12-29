@@ -20,8 +20,8 @@ from .utilities import (
 from .config import RioConfig
 
 artist_title_regex = re.compile(
-    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
-stream_title = u"{artist} - {title}"
+    br"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
+stream_title = b"{artist} - {title}"
 
 
 def rotten(meat, bacteria):
@@ -43,24 +43,20 @@ def parse_meat(stream):
     """
     meatlen = stream.read(1)
     meatlen = ord(meatlen) * 16
-    return unicode_damnit(stream.read(meatlen).strip())
+    return unicode_damnit(stream.read(meatlen).strip()).encode('utf8')
 
 
 def format_meat(meat):
-    try:
-        meat = meat.decode('utf8')
-    except AttributeError:
-        pass
     match = artist_title_regex.search(meat)
     if match:
         data = match.groupdict()
         if data['artist']:
             meat = stream_title.format(**data)
         else:
-            meat = u'{title}'.format(**data)
+            meat = '{title}'.format(**data)
     else:
-        meat = u"Unknown format: {!r}".format(meat)
-    meat = meat.replace(u'\x00', u'').strip()
+        meat = "Unknown format: {!r}".format(meat)
+    meat = meat.replace(u'\x00', u'').strip().decode('utf8')
     return meat
 
 
@@ -119,9 +115,9 @@ class MetadataInjector(object):
     def __init__(self, output_buffer, metaint):
         self.output_buffer = output_buffer
         self.metaint = self._bytes_remaining = metaint
-        self._icy = ""
-        self._last_icy = ""
-        self._current_icy = ""
+        self._icy = b""
+        self._last_icy = b""
+        self._current_icy = b""
 
     def __del__(self):
         # Make sure we leave the client stream at the beginning of a chunk to
@@ -144,8 +140,8 @@ class MetadataInjector(object):
             # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
             self._last_icy = self._current_icy
-            self._icy = "{value:\x00<{icylen}s}".format(value=value,
-                                                        icylen=icylen)
+            self._icy = b"{value:\x00<{icylen}s}".format(value=value,
+                                                         icylen=icylen)
         return locals()
     icy = property(**icy())
 
@@ -185,7 +181,7 @@ class MetadataInjector(object):
             # reset it when we get an update from upstream.
             self._last_icy = self._current_icy
             self._current_icy = self._icy
-            self._icy = ""
+            self._icy = b""
         elif self.metaint:
             # If no metadata, but they're expecting some, push out a NULL byte
             self.output_buffer.write('\x00')
@@ -252,7 +248,7 @@ def icystream(stream, output_buffer, config=None):
     print(render_headers(req.headers))
     print(u"Networks: {!r}".format(stream.networks))
     bacteria = config.bacteria_for_stream(stream)
-    print(u"Ad Sentinels: {!r}".format([b.pattern for b in bacteria]))
+    print(b"Ad Sentinels: {!r}".format([b.pattern for b in bacteria]))
 
     save_file = None
 
@@ -264,7 +260,7 @@ def icystream(stream, output_buffer, config=None):
         raw_meat = parse_meat(stream)
         if updated:
             bacteria = config.bacteria_for_stream(stream)
-            print(u"\nAd Sentinels: {!r}".format(
+            print(b"\nAd Sentinels: {!r}".format(
                 [b.pattern for b in bacteria]), file=fout)
             print(format_meat(output_buffer._current_icy), end='', file=fout)
             elapsed = ''
@@ -326,7 +322,7 @@ def icystream(stream, output_buffer, config=None):
                         os.path.isdir(OUTPUT_DIR),
                         not os.path.exists(save_file_name),
                         output_buffer.last_icy,
-                        not meat.startswith('Unknown format'),
+                        not meat.startswith(u'Unknown format'),
                     ))
                     if save_this_file:
                         save_file = open(save_file_name.encode('utf8'), 'wb')
