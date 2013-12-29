@@ -16,8 +16,8 @@ from .utilities import (
     elapsed_since, render_headers, unicode_damnit, CompleteFileWriter)
 from .config import RioConfig
 
-metadata_regex = re.compile(
-    ur"StreamTitle='(?P<artist>.*)(?: - )(?P<title>.*?)';")
+artist_title_regex = re.compile(
+    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
 stream_title = u"{artist} - {title}"
 
 
@@ -45,9 +45,13 @@ def parse_meat(stream):
 
 def format_meat(meat):
     meat = meat.decode('utf8')
-    match = metadata_regex.search(meat)
+    match = artist_title_regex.search(meat)
     if match:
-        meat = stream_title.format(**match.groupdict())
+        data = match.groupdict()
+        if data['artist']:
+            meat = stream_title.format(**data)
+        else:
+            meat = u'{title}'.format(**data)
     else:
         meat = u"Unknown format: {!r}".format(meat)
     meat = meat.replace(u'\x00', u'').strip()
