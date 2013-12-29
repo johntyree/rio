@@ -175,7 +175,7 @@ class MetadataInjector(object):
     def write_icy(self):
         if self.icy:
             # First tell how long it will be in multiples of 16 bytes
-            icylen = chr(len(self.icy) / 16)
+            icylen = chr(len(self.icy) // 16)
             self.output_buffer.write(icylen)
             # Then write it out
             self.output_buffer.write(self.icy)
