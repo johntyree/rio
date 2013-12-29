@@ -250,7 +250,8 @@ def icystream(stream, output_buffer, config=None):
     print(render_headers(req.headers))
     print(u"Networks: {!r}".format(stream.networks))
     bacteria = config.bacteria_for_stream(stream)
-    print(b"Ad Sentinels: {!r}".format([b.pattern for b in bacteria]))
+    print(u"Ad Sentinels: {!r}".format(
+        [b.pattern.decode('utf8') for b in bacteria]))
 
     save_file = None
 
@@ -262,8 +263,8 @@ def icystream(stream, output_buffer, config=None):
         raw_meat = parse_meat(stream)
         if updated:
             bacteria = config.bacteria_for_stream(stream)
-            print(b"\nAd Sentinels: {!r}".format(
-                [b.pattern for b in bacteria]), file=fout)
+            print(u"\nAd Sentinels: {!r}".format(
+                [b.pattern.decode('utf8') for b in bacteria]), file=fout)
             print(format_meat(output_buffer._current_icy), end='', file=fout)
             elapsed = ''
 
