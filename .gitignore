@@ -35,6 +35,3 @@ nosetests.xml
 .project
 .pydevproject
 .ropeproject
-
-# Project files
-rio/config_data.json
