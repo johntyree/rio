@@ -71,7 +71,7 @@ class BufferedRequest(object):
     """
     def __init__(self, url=None, headers=None, chunksize=1024*10):
         self.chunksize = chunksize
-        self.buf = ''
+        self.buf = bytes()
         if url:
             self.get(url, headers)
 
