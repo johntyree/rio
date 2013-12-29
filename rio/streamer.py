@@ -10,7 +10,10 @@ import sys
 import time
 from math import ceil
 
-from urllib import FancyURLopener
+try:
+    from urllib import FancyURLopener
+except ImportError:
+    from urllib.request import FancyURLopener
 
 from .utilities import (
     elapsed_since, render_headers, unicode_damnit, CompleteFileWriter)
