@@ -84,7 +84,7 @@ def deep_apply(f, data):
 
 def unicode_damnit(data):
     def convert(data):
-        if type(data) != unicode:
+        if not isinstance(data, unicode):
             try:
                 data = unicode(data, encoding='utf8')
             except Exception as e:
@@ -94,6 +94,8 @@ def unicode_damnit(data):
                 except Exception as e:
                     print('1:', e)
                     pass
+        print("data is type: {}".format(type(data)))
+        assert type(data) != bytes()
         return data
     return deep_apply(convert, data)
 
