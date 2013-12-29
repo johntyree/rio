@@ -73,7 +73,7 @@ def deep_apply(f, data):
         for k, v in data.iteritems():
             newdata[deep_apply(f, k)] = deep_apply(f, v)
         return newdata
-    elif isinstance(data, unicode) or isinstance(data, str):
+    elif isinstance(data, unicode) or isinstance(data, bytes):
         return f(data)
     elif hasattr(data, '__iter__'):
         typ = type(data)
