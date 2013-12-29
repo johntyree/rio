@@ -82,24 +82,16 @@ def deep_apply(f, data):
         return data
 
 
-def bytes_damnit(data):
-    def convert(data):
-        try:
-            data = data.encode('utf8')
-        except:
-            pass
-        return data
-    return deep_apply(convert, data)
-
-
 def unicode_damnit(data):
     def convert(data):
         try:
             data = unicode(data, encoding='utf8')
-        except:
+        except Exception as e:
+            print('0:', e)
             try:
                 data = unicode(data, encoding='latin1')
-            except:
+            except Exception as e:
+                print('1:', e)
                 pass
         return data
     return deep_apply(convert, data)
