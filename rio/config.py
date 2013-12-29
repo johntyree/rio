@@ -88,7 +88,7 @@ class RioConfig(object):
         od = self._opts.output
         # FIXME: can this postprocessing be done in optparse?
         self.output_directory = os.path.expanduser(od) if od else None
-        self.age = None
+        self.age = 0.0
         self.update()
 
     def render_config(self):
@@ -161,4 +161,7 @@ class RioConfig(object):
             self.age = self.config_age
             self._bacteria = None
             self._streams = None
-        return self.age
+            return self.age
+        else:
+            print("Bad config?")
+        return False
