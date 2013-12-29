@@ -34,7 +34,7 @@ class Handler(BaseHTTPRequestHandler):
         icy = itertools.cycle((
             (u"StreamTitle='AD - 2 AD AD';", 2),
             (u"StreamTitle='first - second';", 10),
-            (u"StreamTitle='AD - 3 AD AD AD';", 2),
+            (u"StreamTitle='3 AD AD AD';", 2),
             (u"StreamTitle='third - fourth';", 10),
             (u"StreamTitle='AD - 4 AD AD AD AD';", 2),
             (u"StreamTitle='fifth - sixth';", 10),
