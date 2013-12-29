@@ -120,8 +120,9 @@ class RioConfig(object):
     def bacteria(self):
         self.update()
         if self._bacteria is None:
-            self._bacteria = {net: [re.compile(ad) for ad in ads]
-                              for net, ads in self._config['ad'].items()}
+            self._bacteria = {
+                net: [re.compile(ad.encode('utf8')) for ad in ads]
+                for net, ads in self._config['ad'].items()}
         return self._bacteria
 
     def bacteria_for_stream(self, stream):
