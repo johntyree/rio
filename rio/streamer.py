@@ -309,7 +309,11 @@ def icystream(stream, output_buffer, config=None):
                     except OSError:
                         pass
                     if save_file:
-                        save_file.close()
+                        if time.time() - start_time < config.max_ad_length:
+                            del save_file
+                            save_file = None
+                        else:
+                            save_file.close()
                     save_file_name = os.path.join(
                         OUTPUT_DIR, meat + os.path.extsep + u'mp3')
                     save_this_file = all((
