@@ -143,6 +143,8 @@ class MetadataInjector(object):
             icylen = int(ceil(len(value) / 16.0)) * 16
             padding = icylen - len(value)
             self._last_icy = self._current_icy
+            # We'd like to use bytes(padding) here, but it behaves
+            # completely differently in python 2.x and 3.x ...
             self._icy = value + b'\x00' * padding
         return locals()
     icy = property(**icy())
