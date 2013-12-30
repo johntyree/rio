@@ -1,0 +1,161 @@
+{
+    "genre": {
+        "dance": [
+            "di_discohouse", 
+            "di_funkyhouse", 
+            "atr 90s dance", 
+            "aqua-radio-online", 
+            "peripou-web-radio"
+        ], 
+        "lounge": [
+            "di_lounge", 
+            "air-lounge", 
+            "aair-lounge-radio", 
+            "di_chillout", 
+            "beatlounge radio"
+        ], 
+        "pound": [
+            "di_harddance", 
+            "di_hardstyle", 
+            "di_handsup", 
+            "di_hardcore"
+        ], 
+        "mock": [
+            "mock"
+        ], 
+        "ambient": [
+            "di_psybient", 
+            "di_ambient", 
+            "di_spacedreams", 
+            "di_chillout"
+        ]
+    }, 
+    "ad": {
+        "difm": [
+            "There's more to Digitally Imported!", 
+            "ADWTAG", 
+            "Choose premium for the best audio experience"
+        ], 
+        "beatlounge radio": [
+            "BeatLounge Radio dot com"
+        ], 
+        "radionomy": [
+            "Sfx - AdArrival", 
+            "Radionomy - Radionomy", 
+            "Musicplus - Jingle intro", 
+            "Merry Christmas - Jingles", 
+            "Air Lounge Radio - Jingle", 
+            "Tjrs plein de cadeaux - Jingles"
+        ]
+    }, 
+    "stream": {
+        "atr 90s dance": {
+            "url": "http://wms-13.streamsrus.com:13930", 
+            "network": [
+                "addictedtoradio"
+            ]
+        }, 
+        "beatlounge radio": {
+            "url": "http://206.217.201.137:8059", 
+            "network": [
+                "beatlounge radio"
+            ]
+        }, 
+        "di_handsup": {
+            "url": "http://pub1.di.fm/di_handsup", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_funkyhouse": {
+            "url": "http://pub1.di.fm/di_funkyhouse", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "aair-lounge-radio": {
+            "url": "http://listen.radionomy.com/aair-lounge-radio", 
+            "network": [
+                "radionomy"
+            ]
+        }, 
+        "di_hardstyle": {
+            "url": "http://pub1.di.fm/di_hardstyle", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_hardcore": {
+            "url": "http://pub1.di.fm/di_hardcore", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_ambient": {
+            "url": "http://pub1.di.fm/di_ambient", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_chillout": {
+            "url": "http://pub1.di.fm/di_chillout", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "aqua-radio-online": {
+            "url": "http://listen.radionomy.com/aqua-radio-online", 
+            "network": [
+                "radionomy"
+            ]
+        }, 
+        "di_harddance": {
+            "url": "http://pub1.di.fm/di_harddance", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "air-lounge": {
+            "url": "http://listen.radionomy.com/air-lounge", 
+            "network": [
+                "radionomy"
+            ]
+        }, 
+        "di_spacedreams": {
+            "url": "http://pub1.di.fm/di_spacedreams", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_discohouse": {
+            "url": "http://pub1.di.fm/di_discohouse", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "di_lounge": {
+            "url": "http://pub1.di.fm/di_lounge", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "peripou-web-radio": {
+            "url": "http://listen.radionomy.com/peripou-web-radio", 
+            "network": [
+                "radionomy"
+            ]
+        }, 
+        "di_psybient": {
+            "url": "http://pub1.di.fm/di_psybient", 
+            "network": [
+                "difm"
+            ]
+        }, 
+        "mock": {
+            "url": "http://localhost:12345", 
+            "network": [
+                "mock"
+            ]
+        }
+    }
+}
