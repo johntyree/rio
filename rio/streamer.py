@@ -12,8 +12,9 @@ from math import ceil
 
 try:
     from urllib import FancyURLopener
+    from urllib2.urlparse import urlparse
 except ImportError:
-    from urllib.request import FancyURLopener
+    from urllib.request import FancyURLopener, urlparse
 
 from .utilities import (
     elapsed_since, render_headers, unicode_damnit,
@@ -78,7 +79,11 @@ class BufferedRequest(object):
         if headers:
             for k, v in headers.items():
                 o.addheader(k, v)
-        self.req = o.open(url)
+        parts = urlparse(url)
+        location = '//' + parts.netloc + parts.path
+        if parts.port:
+            location += ':' + parts.port
+        self.req = o.open_http(location)
         return self
 
     @property
