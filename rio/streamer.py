@@ -12,8 +12,7 @@ from math import ceil
 
 try:
     from urllib import FancyURLopener
-    from urllib2 import urlparse
-    urlparse = urlparse.urlparse
+    from urllib2.urlparse import urlparse
 except ImportError:
     from urllib.request import FancyURLopener, urlparse
 
