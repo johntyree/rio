@@ -143,7 +143,7 @@ class MetadataInjector(object):
             icylen = int(ceil(len(value) / 16.0)) * 16
             padding = icylen - len(value)
             self._last_icy = self._current_icy
-            self._icy = value + b'\x00' * padding
+            self._icy = value + bytes(padding)
         return locals()
     icy = property(**icy())
 
