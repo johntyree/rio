@@ -197,12 +197,12 @@ def build_headers(buf):
     hdrs = {}
     data = buf.read(4096)
     while True:
-        line, _, data = data.partition('\r\n')
+        line, _, data = data.partition(b'\r\n')
         if not line:
             buf.appendleft(data)
             break
-        elif ':' in line:
-            key, _, val = line.partition(':')
+        elif b':' in line:
+            key, _, val = line.partition(b':')
             hdrs[key] = val
     return hdrs
 
