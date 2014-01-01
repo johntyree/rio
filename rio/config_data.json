@@ -33,8 +33,10 @@
         "difm": [
             "There's more to Digitally Imported!", 
             "ADWTAG", 
-            "Choose premium for the best audio experience",
-            "www\\.di\\.fm/jobs\\.mp3"
+            "Choose premium for the best audio experience", 
+            "www\\.di\\.fm/jobs\\.mp3", 
+            "More of the show after these messages", 
+            "Get Digitally Imported Premium"
         ], 
         "beatlounge radio": [
             "BeatLounge Radio dot com"
@@ -45,7 +47,9 @@
             "Musicplus - Jingle intro", 
             "Merry Christmas - Jingles", 
             "Air Lounge Radio - Jingle", 
-            "Tjrs plein de cadeaux - Jingles"
+            "Tjrs plein de cadeaux - Jingles", 
+            "Telepopmusik - Tuesday", 
+            "Jazzanova - This Is The Place (Overture)"
         ]
     }, 
     "stream": {
