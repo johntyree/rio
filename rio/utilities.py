@@ -12,8 +12,8 @@ import time
 
 
 def sanitize_name(name):
-    garbage = set(r"~\/[];")
-    return ''.join(c if c not in garbage else '_' for c in name)
+    garbage = set(ur"~\/[];")
+    return u''.join(c if c not in garbage else u'_' for c in name)
 
 
 def trace(f):
