@@ -44,7 +44,9 @@ def parse_meat(stream):
     """
     meatlen = stream.read(1)
     meatlen = ord(meatlen) * 16
-    return unicode_damnit(stream.read(meatlen).strip()).encode('utf8')
+    meat = stream.read(meatlen).strip()
+    if meat:
+        return unicode_damnit(meat).encode('utf8')
 
 
 def format_meat(meat):
