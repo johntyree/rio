@@ -63,6 +63,11 @@ class Stream(object):
         msg = "<Stream {name!s}: {url!r}>"
         return msg.format(**vars(self))
 
+    def __repr__(self):
+        msg = "Stream(name={name}, url={url}, \
+               networks={networks}, data={data})"
+        return msg.format(**vars(self))
+
 
 def make_stream(name, rioconfig):
     streamdata = rioconfig._config['stream'][name]
