@@ -151,6 +151,14 @@ class RioConfig(object):
         return bacteria
 
     @property
+    def all_streams(self):
+        self.update()
+        streams = [make_stream(name, self)
+                   for genre, names in self._config['genre'].items()
+                   for name in names]
+        return streams
+
+    @property
     def streams(self):
         self.update()
         if self._streams is None:
