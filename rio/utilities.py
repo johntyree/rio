@@ -3,9 +3,26 @@
 
 from __future__ import print_function
 
+import functools
 import os
+import sys
 import time
 import json
+
+
+def trace(f):
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        call = "\n{}({},{})".format(
+            f.__name__,
+            '\n\t'.join([''] + map(repr, args)),
+            '\n\t'.join([''] + [
+                '{!r}={!r}'.format(k, v) for k, v in kwargs.items()]))
+        value = f(*args, **kwargs)
+        ret = "{call}\n\t===\n\t{value}".format(**locals())
+        print(ret, file=sys.stderr)
+        return value
+    return wrapper
 
 
 def persistently_apply(f, args=(), kwargs={}, tries=10):
