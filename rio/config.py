@@ -42,6 +42,12 @@ def parseargs(argv=sys.argv):
                       help="Genre to stream as defined in the config file")
     parser.add_option('-c', '--config', default=default_config,
                       help="Config file containing streams, ads, and genres")
+    parser.add_option('--list-streams', action='store_true',
+                      dest='list_streams',
+                      help="Show all streams and exit")
+    parser.add_option('--list-genres', action='store_true',
+                      dest='list_genres',
+                      help="Show all genres and exit")
     (options, args) = parser.parse_args(argv)
     return (options, args)
 
@@ -109,6 +115,14 @@ class RioConfig(object):
             fout.write(self.render_config())
         # Force an update
         self.age = 0
+
+    @property
+    def list_streams(self):
+        return self._opts.list_streams
+
+    @property
+    def list_genres(self):
+        return self._opts.list_genres
 
     @property
     def config_age(self):
