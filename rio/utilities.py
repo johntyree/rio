@@ -4,10 +4,11 @@
 from __future__ import print_function
 
 import functools
+import json
+import mimetools
 import os
 import sys
 import time
-import json
 
 
 def trace(f):
@@ -86,17 +87,30 @@ def render_dict(d):
     return json.dumps(d, indent=4)
 
 
-def deep_apply(f, data):
-    if isinstance(data, dict):
-        newdata = {}
-        for k, v in data.iteritems():
-            newdata[deep_apply(f, k)] = deep_apply(f, v)
-        return newdata
-    elif isinstance(data, unicode) or isinstance(data, bytes):
-        return f(data)
-    elif hasattr(data, '__iter__'):
-        typ = type(data)
-        return typ(deep_apply(f, e) for e in data)
+def deep_apply(f, data, walkers=None):
+    custom = walkers or {}
+
+    def safely_iterable(d):
+        return type(d)(deep_apply(f, e, walkers) for e in d)
+
+    def leaf(d):
+        return f(d)
+
+    def key_value_apply(d):
+        return {deep_apply(f, k, walkers): deep_apply(f, v, walkers)
+                for k, v in d.iteritems()}
+    walkers = {
+        tuple: safely_iterable,
+        list: safely_iterable,
+        set: safely_iterable,
+        unicode: leaf,
+        bytes: leaf,
+        dict: key_value_apply
+    }
+    walkers.update(custom)
+    for typ in walkers.keys():
+        if isinstance(data, typ):
+            return walkers[typ](data)
     else:
         return data
 
