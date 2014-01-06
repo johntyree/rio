@@ -17,7 +17,7 @@ except ImportError:
 
 from .utilities import (
     elapsed_since, render_headers, unicode_damnit,
-    CompleteFileWriter)
+    CompleteFileWriter, sanitize_name)
 from .config import RioConfig
 
 artist_title_regex = re.compile(
@@ -332,7 +332,8 @@ def icystream(stream, output_buffer, config=None):
                         not meat.startswith(u'Unknown format'),
                     ))
                     if save_this_file:
-                        save_file = open(save_file_name.encode('utf8'), 'wb')
+                        safe_name = sanitize_name(save_file_name)
+                        save_file = open(safe_name.encode('utf8'), 'wb')
                         save_file = CompleteFileWriter(save_file)
                         print("New file: {}".format(save_file.name), file=fout)
                     else:

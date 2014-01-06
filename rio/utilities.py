@@ -11,6 +11,11 @@ import sys
 import time
 
 
+def sanitize_name(name):
+    garbage = set(r"~\/[];")
+    return str(c if c not in garbage else '_' for c in name)
+
+
 def trace(f):
     @functools.wraps(f)
     def wrapper(*args, **kwargs):
