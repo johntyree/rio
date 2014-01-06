@@ -5,6 +5,7 @@ from __future__ import print_function
 
 import os
 import time
+import json
 
 
 def persistently_apply(f, args=(), kwargs={}, tries=10):
@@ -64,7 +65,8 @@ class Duplexer(object):
 
 
 def render_dict(d):
-    return '\n'.join("{}: {}".format(key, val) for key, val in d.items())
+    # return '\n'.join("{}: {}".format(key, val) for key, val in d.items())
+    return json.dumps(d, indent=4)
 
 
 def deep_apply(f, data):
