@@ -84,7 +84,9 @@ class Duplexer(object):
 
 def render_dict(d):
     # return '\n'.join("{}: {}".format(key, val) for key, val in d.items())
-    return json.dumps(d, indent=4)
+    walkers = {mimetools.Message: lambda d: str(d)}
+    pretty = unicode_damnit(d, walkers=walkers)
+    return json.dumps(pretty, indent=4)
 
 
 def deep_apply(f, data, walkers=None):
@@ -115,7 +117,7 @@ def deep_apply(f, data, walkers=None):
         return data
 
 
-def unicode_damnit(data):
+def unicode_damnit(data, walkers={}):
     def convert(data):
         if not isinstance(data, unicode):
             try:
@@ -126,7 +128,7 @@ def unicode_damnit(data):
                 except UnicodeDecodeError:
                     pass
         return data
-    return deep_apply(convert, data)
+    return deep_apply(convert, data, walkers=walkers)
 
 
 def render_headers(headers):
