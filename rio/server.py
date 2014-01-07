@@ -9,7 +9,7 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from .config import RioConfig
 from .streamer import icystream
-from .utilities import render_dict, unicode_damnit
+from .utilities import render_client_headers
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -18,8 +18,10 @@ class Handler(BaseHTTPRequestHandler):
         # FIXME: When the content-type changes between streams, we're probably
         # boned.
         config = RioConfig()
-        pretty_headers = unicode_damnit(render_dict(self.headers))
-        print(u"\n{}\n".format(pretty_headers), file=sys.stderr)
+        pretty_headers = render_client_headers(self.headers.dict)
+        msg = u"Client Connected:\n{}".format(pretty_headers)
+        msg = msg.replace('\n', '\n\t')
+        print(msg, file=sys.stderr)
         config.forward_metadata = 'icy-metadata' in self.headers
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')

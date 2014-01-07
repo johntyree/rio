@@ -136,7 +136,18 @@ def unicode_damnit(data, walkers={}):
     return deep_apply(convert, data, walkers=walkers)
 
 
-def render_headers(headers):
+def render_client_headers(headers):
+    msgs = (
+        ('host', "Host: {}"),
+        ('user-agent', "User Agent: {}"),
+        ('icy-metadata', "Icy-MetaData: {}"),
+    )
+    txt = '\n'.join(msg.format(headers[hdr])
+                    for hdr, msg in msgs if hdr in headers)
+    return txt
+
+
+def render_stream_headers(headers):
     msgs = (
         ('icy-name', "Station: {}"),
         ('icy-genre', "Genre: {}"),

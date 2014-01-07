@@ -16,7 +16,7 @@ except ImportError:
     from urllib.request import FancyURLopener
 
 from .utilities import (
-    elapsed_since, render_headers, unicode_damnit,
+    elapsed_since, render_stream_headers, unicode_damnit,
     CompleteFileWriter, sanitize_name)
 from .config import RioConfig
 
@@ -251,7 +251,7 @@ def icystream(stream, output_buffer, config=None):
 
     start_time = time.time()
 
-    print(render_headers(req.headers))
+    print(render_stream_headers(req.headers))
     print(u"Networks: {!r}".format(stream.networks))
     bacteria = config.bacteria_for_stream(stream)
     print(u"Ad Sentinels: {!r}".format(
