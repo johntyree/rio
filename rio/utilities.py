@@ -104,8 +104,8 @@ def deep_apply(f, data, walkers=None):
         return f(d)
 
     def key_value_apply(d):
-        return {deep_apply(f, k, walkers): deep_apply(f, v, walkers)
-                for k, v in d.iteritems()}
+        return dict(deep_apply(f, kv, walkers) for kv in d.iteritems())
+
     walkers = {
         tuple: safely_iterable,
         list: safely_iterable,
