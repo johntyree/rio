@@ -7,6 +7,7 @@ import json
 import itertools
 import optparse
 import os
+import random
 import re
 import sys
 
@@ -32,6 +33,8 @@ def load_config(fname):
 
 def parseargs(argv=sys.argv):
     parser = optparse.OptionParser()
+    parser.add_option('-s', '--shuffle', action='store_true', dest='shuffle',
+                      help="Play streams in random order")
     parser.add_option('-p', '--port', type=int, default=1986,
                       help="Port on which to listen for clients")
     parser.add_option('-H', '--host', default="localhost",
@@ -168,15 +171,18 @@ class RioConfig(object):
 
     def cycle_streams(self):
         lasturl = ''
+        streams = list(self.streams)
         while True:
             age = self.age
             # Rotate the list to the last one
             try:
                 previous = [s.url for s in self.streams].index(lasturl)
-                nextidx = (previous + 1) % len(self.streams)
+                nextidx = (previous + 1) % len(streams)
             except ValueError:
                 nextidx = 0
-            streams = self.streams[nextidx:] + self.streams[:nextidx]
+            streams = streams[nextidx:] + streams[:nextidx]
+            if self._opts.shuffle:
+                random.shuffle(streams)
             for stream in itertools.cycle(streams):
                 lasturl = stream.url
                 yield stream
