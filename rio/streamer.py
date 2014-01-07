@@ -323,8 +323,9 @@ def icystream(stream, output_buffer, config=None):
                             save_file = None
                         else:
                             save_file.close()
+                    safe_meat = sanitize_name(meat)
                     save_file_name = os.path.join(
-                        OUTPUT_DIR, meat + os.path.extsep + u'mp3')
+                        OUTPUT_DIR, safe_meat + os.path.extsep + u'mp3')
                     save_this_file = all((
                         os.path.isdir(OUTPUT_DIR),
                         not os.path.exists(save_file_name),
@@ -332,10 +333,16 @@ def icystream(stream, output_buffer, config=None):
                         not meat.startswith(u'Unknown format'),
                     ))
                     if save_this_file:
-                        safe_name = sanitize_name(save_file_name)
-                        save_file = open(safe_name.encode('utf8'), 'wb')
-                        save_file = CompleteFileWriter(save_file)
-                        print("New file: {}".format(save_file.name), file=fout)
+                        try:
+                            save_file = open(save_file_name.encode('utf8'),
+                                             'wb')
+                            save_file = CompleteFileWriter(save_file)
+                            print("New file: {}".format(save_file.name),
+                                  file=fout)
+                        except IOError:
+                            err = "Unable to save file: {}"
+                            print(err.format(save_file_name))
+                            save_file = None
                     else:
                         save_file = None
                 print(meat, end='', file=fout)
