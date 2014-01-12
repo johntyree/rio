@@ -21,14 +21,17 @@ from .utilities import (
 from .config import RioConfig
 
 artist_title_regex = re.compile(
-    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.*?)';")
+    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.+?)';")
 stream_title = u"{artist} - {title}"
 
 
 def rotten(meat, bacteria):
     """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
-    return tuple(bacterium.pattern for bacterium in bacteria
-                 if bacterium.search(meat))
+    infections = [bacterium.pattern
+                  for bacterium in bacteria if bacterium.search(meat)]
+    if not artist_title_regex.search(meat):
+        infections.append('No title')
+    return infections
 
 
 def show_rotten(raw, bad, file=sys.stderr):
