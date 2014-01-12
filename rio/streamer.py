@@ -338,8 +338,7 @@ def icystream(stream, output_buffer, config=None):
                         os.path.isdir(OUTPUT_DIR),
                         not os.path.exists(save_file_name),
                         output_buffer.last_icy,
-                        not meat.startswith(u'Unknown format'),
-                    ))
+                        not meat.startswith(u'Unknown format')))
                     if save_this_file:
                         try:
                             save_file = open(save_file_name.encode('utf8'),
