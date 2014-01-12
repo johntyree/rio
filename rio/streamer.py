@@ -305,8 +305,12 @@ def icystream(stream, output_buffer, config=None):
 
                 elapsed = ''
                 if save_file:
-                    save_file.close()
-
+                    if time.time() - start_time < config.max_ad_length:
+                        print("Song too short", file=fout)
+                        del save_file
+                        save_file = None
+                    else:
+                        save_file.close()
                 return
             else:
                 # Copy new icy metadata to clients
@@ -322,6 +326,7 @@ def icystream(stream, output_buffer, config=None):
                         pass
                     if save_file:
                         if time.time() - start_time < config.max_ad_length:
+                            print("Song too short", file=fout)
                             del save_file
                             save_file = None
                         else:
