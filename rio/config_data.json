@@ -40,7 +40,8 @@
             "Choose premium for the best audio experience", 
             "www\\.di\\.fm/jobs\\.mp3", 
             "More of the show after these messages", 
-            "Get Digitally Imported Premium"
+            "Get Digitally Imported Premium", 
+            "Job Opportunity at DI! www.di.fm/jobs", 
         ], 
         "beatlounge radio": [
             "BeatLounge Radio dot com"
@@ -52,7 +53,8 @@
             "Merry Christmas - Jingles", 
             "Air Lounge Radio - Jingle", 
             "Tjrs plein de cadeaux - Jingles", 
-            "AquaRadio - Intro-Out (Radionomy)"
+            "AquaRadio - Intro-Out (Radionomy)", 
+            "Air Lounge Radio - jingle", 
         ]
     }, 
     "stream": {
