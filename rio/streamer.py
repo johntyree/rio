@@ -36,7 +36,7 @@ def rotten(meat, bacteria):
 
 def show_rotten(raw, bad, file=sys.stderr):
     for b in bad:
-        msg = '''Rotten! {!r} <-> {!r}!'''.format(raw, b)
+        msg = '''Rotten! {!r} <-> {!r}'''.format(raw, b)
         print(msg, file=file)
 
 
@@ -223,7 +223,7 @@ def icystream(stream, output_buffer, config=None):
 
     config = config or RioConfig()
 
-    print("Starting {!s}".format(stream))
+    print("\nStarting {!s}".format(stream))
 
     elapsed = ''
     fout = sys.stdout

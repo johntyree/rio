@@ -51,7 +51,7 @@ class CompleteFileWriter(object):
     def __del__(self):
         if not self.fout.closed:
             self.fout.close()
-            print("\nRemoving partial file: {!r}".format(self.fout.name))
+            print("Removing partial file: {!r}".format(self.fout.name))
             os.unlink(self.fout.name)
 
 
