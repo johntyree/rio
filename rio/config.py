@@ -26,7 +26,7 @@ def load_config(fname):
     try:
         data = persistently_apply(json.loads, args=(u''.join(data),))
     except ValueError as e:
-        print("Could not load config: {}".format(e))
+        print("Could not load config: {}".format(e), file=sys.stderr)
         data = {}
     return unicode_damnit(data)
 
@@ -140,7 +140,7 @@ class RioConfig(object):
 
     @property
     def bacteria(self):
-        self.update()
+        self.update(safe=True)
         if self._bacteria is None:
             self._bacteria = {
                 net: [re.compile(ad.encode('utf8')) for ad in ads]
@@ -155,7 +155,7 @@ class RioConfig(object):
 
     @property
     def all_streams(self):
-        self.update()
+        self.update(safe=True)
         streams = [make_stream(name, self)
                    for genre, names in self._config['genre'].items()
                    for name in names]
@@ -163,7 +163,7 @@ class RioConfig(object):
 
     @property
     def streams(self):
-        self.update()
+        self.update(safe=True)
         if self._streams is None:
             self._streams = [make_stream(name, self) for name in
                              self._config['genre'][self._opts.genre]]
@@ -189,7 +189,7 @@ class RioConfig(object):
                 if self.age != age:
                     break
 
-    def update(self):
+    def update(self, safe=False):
         if self.config_age <= self.age:
             return False
         new_config = load_config(self.config_file)
@@ -200,5 +200,13 @@ class RioConfig(object):
             self._streams = None
             return self.age
         else:
-            print("Bad config?")
+            msg = "Invalid JSON in config?"
+            if safe:
+                print("ValueError: {}".format(msg), file=sys.stderr)
+            else:
+                raise ValueError(msg)
         return False
+
+if __name__ == '__main__':
+    # A validator
+    RioConfig()
