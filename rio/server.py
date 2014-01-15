@@ -9,7 +9,7 @@ from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from .config import RioConfig
 from .streamer import icystream
-from .utilities import render_client_headers
+from .utilities import render_headers
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -18,7 +18,8 @@ class Handler(BaseHTTPRequestHandler):
         # FIXME: When the content-type changes between streams, we're probably
         # boned.
         config = RioConfig()
-        pretty_headers = render_client_headers(self.headers.dict)
+        self.headers['client'] = "{}:{}".format(*self.client_address)
+        pretty_headers = render_headers(self.headers.dict)
         msg = u"Client Connected:\n{}".format(pretty_headers)
         msg = msg.replace('\n', '\n\t')
         print(msg, file=sys.stderr)
