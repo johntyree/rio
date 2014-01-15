@@ -140,16 +140,20 @@ def render_headers(headers):
     pretty = {
         'icy-name': "Station",
         'icy-genre': "Genre",
+        'icy-description': "Description",
         'icy-br': "Bitrate"}
     exclude = set((
         'connection',
         'icy-notice1',
+        'icy-audio-info',
         'expires',
         'icy-pub',
         'icy-url',
         'cache-control',
         'icy-metaint',
         'icy-notice2',
+        'range',
+        'accept-ranges',
         'pragma'))
     txt = []
     for k, v in headers.items():
