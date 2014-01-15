@@ -255,7 +255,7 @@ def icystream(stream, output_buffer, config=None):
     start_time = time.time()
 
     msg = render_headers(req.headers)
-    msg = msg.replace('\n', '\n\t')
+    msg = '\t' + msg.replace('\n', '\n\t')
     print(msg)
     print(u"Networks: {!r}".format(stream.networks))
     bacteria = config.bacteria_for_stream(stream)
