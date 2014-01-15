@@ -109,7 +109,8 @@ class RioConfig(object):
         self.update()
 
     def render_config(self):
-        return json.dumps(self._config, indent=4)
+        raw = json.dumps(self._config, indent=4)
+        return '\n'.join(raw.splitlines())
 
     def write_config(self, fname=None):
         if fname is None:
