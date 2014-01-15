@@ -93,7 +93,7 @@ class RioConfig(object):
     _config = None
     ICY_METAINT = 8192
     # The number of seconds required before something isn't an ad
-    min_ad_length, max_ad_length = 2, 120
+    min_ad_length, max_ad_length = 0, 120
     forward_metadata = False
 
     def __init__(self, argv=sys.argv, config_file=None):
