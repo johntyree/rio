@@ -36,21 +36,19 @@ def parseargs(argv=sys.argv):
     parser.add_option('-s', '--shuffle', action='store_true', dest='shuffle',
                       help="Play streams in random order")
     parser.add_option('-p', '--port', type=int, default=1986,
-                      help="Port on which to listen for clients")
+                      help="Port on which to listen for incoming connections")
     parser.add_option('-H', '--host', default="localhost",
-                      help="Our hostname")
+                      help="Host on which to listen for incoming connections")
     parser.add_option('-o', '--output', default=None,
-                      help="Directory for saving incoming audio to")
+                      help="Directory in which to save incoming audio")
     parser.add_option('-g', '--genre', default='lounge',
-                      help="Genre to stream as defined in the config file")
+                      help="Musical genre (as defined in config file)")
     parser.add_option('-c', '--config', default=default_config,
                       help="Config file containing streams, ads, and genres")
     parser.add_option('--list-streams', action='store_true',
-                      dest='list_streams',
-                      help="Show all streams and exit")
+                      dest='list_streams', help="Show all streams and exit")
     parser.add_option('--list-genres', action='store_true',
-                      dest='list_genres',
-                      help="Show all genres and exit")
+                      dest='list_genres', help="Show all genres and exit")
     (options, args) = parser.parse_args(argv)
     return (options, args)
 
