@@ -31,7 +31,22 @@ time, Rio will learn when to switch stations.
 Running
 -------
 
-First `python -m rio.rio [-o <path>]`. Then point your client at
+    Usage: rio.py [options]
+
+    Options:
+    -h, --help            show this help message and exit
+    -s, --shuffle         Play streams in random order
+    -p PORT, --port=PORT  Port on which to listen for incoming connections
+    -H HOST, --host=HOST  Host on which to listen for incoming connections
+    -o DIR, --output=DIR  Directory in which to save incoming audio
+    -g GENRE, --genre=GENRE
+                            Musical genre (as defined in config file)
+    -c CONFIG, --config=CONFIG
+                            Config file containing streams, ads, and genres
+    --list-streams        Show all streams and exit
+    --list-genres         Show all genres and exit
+
+**tldr;** First `python -m rio.rio [-o <DIR>]`. Then point your client at
 `http://localhost:1986`. (reppin' funky '86!)
 
-Songs will be saved at `<path>` if specified.
+Songs will be saved to `<DIR>` if specified.
