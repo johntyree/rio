@@ -39,7 +39,7 @@ def parseargs(argv=sys.argv):
                       help="Port on which to listen for incoming connections")
     parser.add_option('-H', '--host', default="localhost",
                       help="Host on which to listen for incoming connections")
-    parser.add_option('-o', '--output', default=None,
+    parser.add_option('-o', '--output', default=None, metavar='DIR',
                       help="Directory in which to save incoming audio")
     parser.add_option('-g', '--genre', default='lounge',
                       help="Musical genre (as defined in config file)")
