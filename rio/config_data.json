@@ -5,7 +5,20 @@
             "di_funkyhouse",
             "atr 90s dance",
             "aqua-radio-online",
-            "peripou-web-radio"
+            "peripou-web-radio",
+            "di_mainstage",
+            "di_bigroomhouse"
+        ],
+        "house": [
+            "di_bigroomhouse",
+            "di_mainstage",
+            "di_house",
+            "di_deephouse",
+            "di_vocaltrance",
+            "di_classicvocaltrance",
+            "di_progressivepsy",
+            "di_classictechno",
+            "di_epictrance"
         ],
         "lounge": [
             "di_lounge",
@@ -30,6 +43,7 @@
         ]
     },
     "ad": {
+        "mock": [],
         "addictedtoradio": [
             "90s Dance & Beyond Channel - AddictedToRadio.com",
             "FX - Our-App-Approved-Apps"
@@ -41,6 +55,7 @@
             "www\\.di\\.fm/jobs\\.mp3",
             "More of the show after these messages",
             "Get Digitally Imported Premium",
+            "S\\d+E\\d+",
             "Job Opportunity at DI! www.di.fm/jobs"
         ],
         "beatlounge radio": [
@@ -72,6 +87,18 @@
         },
         "di_handsup": {
             "url": "http://pub1.di.fm/di_handsup",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_epictrance": {
+            "url": "http://pub1.di.fm/di_epictrance",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_bigroomhouse": {
+            "url": "http://pub1.di.fm/di_bigroomhouse",
             "network": [
                 "difm"
             ]
@@ -136,6 +163,54 @@
                 "difm"
             ]
         },
+        "di_classictechno": {
+            "url": "http://pub1.di.fm/di_classictechno",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_pregessivepsy": {
+            "url": "http://pub1.di.fm/di_pregessivepsy",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_classicvocaltrance": {
+            "url": "http://pub1.di.fm/di_classicvocaltrance",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_vocaltrance": {
+            "url": "http://pub1.di.fm/di_vocaltrance",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_deephouse": {
+            "url": "http://pub1.di.fm/di_deephouse",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_mainstage": {
+            "url": "http://pub1.di.fm/di_mainstage",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_progressivepsy": {
+            "url": "http://pub1.di.fm/di_progressivepsy",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_house": {
+            "url": "http://pub1.di.fm/di_house",
+            "network": [
+                "difm"
+            ]
+        },
         "di_discohouse": {
             "url": "http://pub1.di.fm/di_discohouse",
             "network": [
@@ -159,6 +234,7 @@
             "network": [
                 "difm"
             ]
+
         },
         "mock": {
             "url": "http://localhost:12345",
