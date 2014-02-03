@@ -27,8 +27,33 @@ def load_config(fname):
         data = persistently_apply(json.loads, args=(u''.join(data),))
     except ValueError as e:
         print("Could not load config: {}".format(e), file=sys.stderr)
-        data = {}
+        return {}
+    if not valid_config(data):
+        return {}
     return unicode_damnit(data)
+
+
+def valid_config(config):
+    c = config
+    genres = c['genre']
+    errord = []
+    for genre, streams in genres.items():
+        for stream in streams:
+            if stream not in c['stream']:
+                errord.append(stream)
+    if errord:
+        print("These stations don't exist!")
+        for s in errord:
+            print("\t" + s)
+        return False
+
+    for stream, data in c["stream"].items():
+        for net in data["network"]:
+            if net not in c["ad"]:
+                print("Unknown net: {} ({})".format(net, stream))
+                errord.append(net)
+
+    return not errord
 
 
 def parseargs(argv=sys.argv):
