@@ -100,9 +100,12 @@ class RioConfig(object):
             self.port = self._opts.port
             self.host = self._opts.host
         self.config_file = config_file or self._opts.config
-        od = self._opts.output
         # FIXME: can this postprocessing be done in optparse?
-        self.output_directory = os.path.expanduser(od) if od else None
+        if self._opts.output:
+            target_dir = os.path.expanduser(self._opts.output)
+            self.output_directory = os.path.join(target_dir, self._opts.genre)
+        else:
+            self.output_directory = None
         self.age = 0.0
         self.update()
 
