@@ -46,7 +46,7 @@ Running
     --list-streams        Show all streams and exit
     --list-genres         Show all genres and exit
 
-**tldr;** First `python -m rio.rio [-o <DIR>]`. Then point your client at
+**tldr;** First `python -m rio.rio -g lounge --shuffle [-o <DIR>]`. Then point your client at
 `http://localhost:1986`. (reppin' funky '86!)
 
 Songs will be saved to `<DIR>` if specified.
