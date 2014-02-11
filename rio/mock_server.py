@@ -9,7 +9,7 @@ import itertools
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
-from .utilities import unicode_damnit, render_dict
+from .utilities import unicode_dammit, render_dict
 from .streamer import MetadataInjector
 
 ICY_METAINT = 10000
@@ -24,7 +24,7 @@ def by_chunks_of(sz, tail):
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
-        pretty_headers = unicode_damnit(render_dict(self.headers))
+        pretty_headers = unicode_dammit(render_dict(self.headers))
         print(u"\n{}\n".format(pretty_headers), file=sys.stderr)
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')
