@@ -16,7 +16,7 @@ except ImportError:
     from urllib.request import FancyURLopener
 
 from .utilities import (
-    elapsed_since, render_headers, unicode_damnit,
+    elapsed_since, render_headers, unicode_dammit,
     CompleteFileWriter, sanitize_name)
 from .config import RioConfig
 
@@ -49,11 +49,11 @@ def parse_meat(stream):
     meatlen = ord(meatlen) * 16
     meat = stream.read(meatlen).strip()
     if meat:
-        return unicode_damnit(meat).encode('utf8')
+        return unicode_dammit(meat).encode('utf8')
 
 
 def format_meat(meat):
-    meat = unicode_damnit(meat)
+    meat = unicode_dammit(meat)
     match = artist_title_regex.search(meat)
     if match:
         data = match.groupdict()
@@ -143,7 +143,7 @@ class MetadataInjector(object):
 
         def fset(self, value):
             # Convert to utf8
-            value = unicode_damnit(value).encode('utf8')
+            value = unicode_dammit(value).encode('utf8')
             # Pad it out to a multiple of 16 bytes
             icylen = int(ceil(len(value) / 16.0)) * 16
             padding = icylen - len(value)
