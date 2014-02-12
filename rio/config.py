@@ -11,7 +11,7 @@ import random
 import re
 import sys
 
-from .utilities import unicode_damnit, persistently_apply
+from .utilities import unicode_dammit, persistently_apply
 
 default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 
@@ -30,7 +30,7 @@ def load_config(fname):
         return {}
     if not valid_config(data):
         return {}
-    return unicode_damnit(data)
+    return unicode_dammit(data)
 
 
 def valid_config(config):
