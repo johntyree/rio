@@ -10,6 +10,11 @@ setup(name='rio',
       description="Stream ShoutCast stations, skipping ad content.",
       keywords="shoutcast radio",
       long_description=open('README.md').read(),
+      entry_points={
+          'console_scripts': [
+              'rio = rio.rio:main',
+          ],
+      },
       classifiers=[
           "Development Status :: 3 - Alpha",
           "License :: OSI Approved :: "
