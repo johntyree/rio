@@ -49,4 +49,4 @@ fi
 git diff-index --check --cached $against -- || exit 1
 
 # Check that our config file is valid
-PYTHONPATH="$(git rev-parse --show-toplevel);$PYTHONPATH" exec python -m rio.config
+PYTHONPATH="$(git rev-parse --show-toplevel);$PYTHONPATH" exec python2 -m rio.config

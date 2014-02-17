@@ -112,10 +112,10 @@
                 "difm"
             ]
         },
-        "di_lounge": {
-            "url": "http://pub1.di.fm/di_lounge",
+        "aqua-radio-online": {
+            "url": "http://listen.radionomy.com/aqua-radio-online",
             "network": [
-                "difm"
+                "radionomy"
             ]
         },
         "di_harddance": {
@@ -142,10 +142,10 @@
                 "difm"
             ]
         },
-        "aqua-radio-online": {
-            "url": "http://listen.radionomy.com/aqua-radio-online",
+        "di_lounge": {
+            "url": "http://pub1.di.fm/di_lounge",
             "network": [
-                "radionomy"
+                "difm"
             ]
         },
         "peripou-web-radio": {
