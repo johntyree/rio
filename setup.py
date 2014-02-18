@@ -13,8 +13,8 @@ setup(name='rio',
       entry_points={
           'console_scripts': [
               'rio = rio.rio:main',
-          ],
-      },
+              ],
+          },
       classifiers=[
           "Development Status :: 3 - Alpha",
           "License :: OSI Approved :: "
@@ -22,5 +22,5 @@ setup(name='rio',
           "Topic :: Multimedia :: Sound/Audio :: Analysis",
           "Topic :: Multimedia :: Sound/Audio :: Capture/Recording",
           "Topic :: Utilities",
-      ],
+          ],
       )
