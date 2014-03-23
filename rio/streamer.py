@@ -267,7 +267,10 @@ def icystream(stream, output_buffer, config=None):
     OUTPUT_DIR = config.output_directory
 
     while True:
-        updated = config.update()
+        try:
+            updated = config.update()
+        except ValueError as e:
+            print(u"ValueError:", e)
         chunk = stream.read(interval)
         raw_meat = parse_meat(stream)
         if updated:

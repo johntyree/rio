@@ -29,11 +29,11 @@ class Handler(BaseHTTPRequestHandler):
         if config.forward_metadata:
             self.send_header('icy-metaint', str(config.ICY_METAINT))
         self.end_headers()
-        try:
-            for stream in config.cycle_streams():
-                icystream(stream, self.wfile, config=config)
-        except KeyboardInterrupt:
-            pass
+        # try:
+        for stream in config.cycle_streams():
+            icystream(stream, self.wfile, config=config)
+        # except KeyboardInterrupt:
+            # pass
 
 
 class ForkingHTTPServer(ForkingMixIn, HTTPServer):
