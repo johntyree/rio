@@ -41,6 +41,7 @@
         ]
     },
     "ad": {
+        "mock": [],
         "addictedtoradio": [
             "90s Dance & Beyond Channel - AddictedToRadio.com",
             "FX - Our-App-Approved-Apps"
@@ -216,6 +217,7 @@
             "network": [
                 "difm"
             ]
+
         },
         "di_ambient": {
             "url": "http://pub1.di.fm/di_ambient",
