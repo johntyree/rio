@@ -1,13 +1,16 @@
 {
     "genre": {
+        "pound": [
+            "di_harddance",
+            "di_hardstyle",
+            "di_handsup",
+            "di_hardcore"
+        ],
         "dance": [
             "di_discohouse",
             "di_funkyhouse",
             "atr 90s dance",
-            "aqua-radio-online",
-            "peripou-web-radio",
-            "di_mainstage",
-            "di_bigroomhouse"
+            "aqua-radio-online"
         ],
         "house": [
             "di_bigroomhouse",
@@ -24,26 +27,20 @@
             "di_lounge",
             "air-lounge",
             "aair-lounge-radio",
+            "peripou-web-radio",
             "di_chillout"
-        ],
-        "pound": [
-            "di_harddance",
-            "di_hardstyle",
-            "di_handsup",
-            "di_hardcore"
-        ],
-        "mock": [
-            "mock"
         ],
         "ambient": [
             "di_psybient",
             "di_ambient",
             "di_spacedreams",
             "di_chillout"
+        ],
+        "mock": [
+            "mock"
         ]
     },
     "ad": {
-        "mock": [],
         "addictedtoradio": [
             "90s Dance & Beyond Channel - AddictedToRadio.com",
             "FX - Our-App-Approved-Apps"
@@ -61,6 +58,7 @@
         "beatlounge radio": [
             "BeatLounge Radio dot com"
         ],
+        "mock": [],
         "radionomy": [
             "Sfx - AdArrival",
             "Radionomy - Radionomy",
@@ -69,14 +67,34 @@
             "Air Lounge Radio - Jingle",
             "Tjrs plein de cadeaux - Jingles",
             "AquaRadio - Intro-Out (Radionomy)",
-            "Air Lounge Radio - jingle"
+            "Air Lounge Radio - jingle",
+            "AquaRadio - EstoEsAquaLaRadioDeLosExitos(sort)",
+            "AquaRadio - Intro-Out (Radionomy)"
         ]
     },
     "stream": {
-        "atr 90s dance": {
-            "url": "http://wms-13.streamsrus.com:13930",
+        "di_handsup": {
+            "url": "http://pub1.di.fm/di_handsup",
             "network": [
-                "addictedtoradio"
+                "difm"
+            ]
+        },
+        "aqua-radio-online": {
+            "url": "http://listen.radionomy.com/aqua-radio-online",
+            "network": [
+                "radionomy"
+            ]
+        },
+        "di_pregessivepsy": {
+            "url": "http://pub1.di.fm/di_pregessivepsy",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_spacedreams": {
+            "url": "http://pub1.di.fm/di_spacedreams",
+            "network": [
+                "difm"
             ]
         },
         "beatlounge radio": {
@@ -85,8 +103,80 @@
                 "beatlounge radio"
             ]
         },
-        "di_handsup": {
-            "url": "http://pub1.di.fm/di_handsup",
+        "peripou-web-radio": {
+            "url": "http://listen.radionomy.com/peripou-web-radio",
+            "network": [
+                "radionomy"
+            ]
+        },
+        "atr 90s dance": {
+            "url": "http://wms-13.streamsrus.com:13930",
+            "network": [
+                "addictedtoradio"
+            ]
+        },
+        "di_classicvocaltrance": {
+            "url": "http://pub1.di.fm/di_classicvocaltrance",
+            "network": [
+                "difm"
+            ]
+        },
+        "air-lounge": {
+            "url": "http://listen.radionomy.com/air-lounge",
+            "network": [
+                "radionomy"
+            ]
+        },
+        "di_house": {
+            "url": "http://pub1.di.fm/di_house",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_classictechno": {
+            "url": "http://pub1.di.fm/di_classictechno",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_deephouse": {
+            "url": "http://pub1.di.fm/di_deephouse",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_progressivepsy": {
+            "url": "http://pub1.di.fm/di_progressivepsy",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_psybient": {
+            "url": "http://pub1.di.fm/di_psybient",
+            "network": [
+                "difm"
+            ]
+        },
+        "mock": {
+            "url": "http://localhost:12345",
+            "network": [
+                "mock"
+            ]
+        },
+        "di_funkyhouse": {
+            "url": "http://pub1.di.fm/di_funkyhouse",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_chillout": {
+            "url": "http://pub1.di.fm/di_chillout",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_harddance": {
+            "url": "http://pub1.di.fm/di_harddance",
             "network": [
                 "difm"
             ]
@@ -97,14 +187,14 @@
                 "difm"
             ]
         },
-        "di_bigroomhouse": {
-            "url": "http://pub1.di.fm/di_bigroomhouse",
+        "di_mainstage": {
+            "url": "http://pub1.di.fm/di_mainstage",
             "network": [
                 "difm"
             ]
         },
-        "di_funkyhouse": {
-            "url": "http://pub1.di.fm/di_funkyhouse",
+        "di_vocaltrance": {
+            "url": "http://pub1.di.fm/di_vocaltrance",
             "network": [
                 "difm"
             ]
@@ -133,80 +223,14 @@
                 "difm"
             ]
         },
-        "di_chillout": {
-            "url": "http://pub1.di.fm/di_chillout",
+        "di_lounge": {
+            "url": "http://pub1.di.fm/di_lounge",
             "network": [
                 "difm"
             ]
         },
-        "aqua-radio-online": {
-            "url": "http://listen.radionomy.com/aqua-radio-online",
-            "network": [
-                "radionomy"
-            ]
-        },
-        "di_harddance": {
-            "url": "http://pub1.di.fm/di_harddance",
-            "network": [
-                "difm"
-            ]
-        },
-        "air-lounge": {
-            "url": "http://listen.radionomy.com/air-lounge",
-            "network": [
-                "radionomy"
-            ]
-        },
-        "di_spacedreams": {
-            "url": "http://pub1.di.fm/di_spacedreams",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_classictechno": {
-            "url": "http://pub1.di.fm/di_classictechno",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_pregessivepsy": {
-            "url": "http://pub1.di.fm/di_pregessivepsy",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_classicvocaltrance": {
-            "url": "http://pub1.di.fm/di_classicvocaltrance",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_vocaltrance": {
-            "url": "http://pub1.di.fm/di_vocaltrance",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_deephouse": {
-            "url": "http://pub1.di.fm/di_deephouse",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_mainstage": {
-            "url": "http://pub1.di.fm/di_mainstage",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_progressivepsy": {
-            "url": "http://pub1.di.fm/di_progressivepsy",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_house": {
-            "url": "http://pub1.di.fm/di_house",
+        "di_bigroomhouse": {
+            "url": "http://pub1.di.fm/di_bigroomhouse",
             "network": [
                 "difm"
             ]
@@ -215,31 +239,6 @@
             "url": "http://pub1.di.fm/di_discohouse",
             "network": [
                 "difm"
-            ]
-        },
-        "di_lounge": {
-            "url": "http://pub1.di.fm/di_lounge",
-            "network": [
-                "difm"
-            ]
-        },
-        "peripou-web-radio": {
-            "url": "http://listen.radionomy.com/peripou-web-radio",
-            "network": [
-                "radionomy"
-            ]
-        },
-        "di_psybient": {
-            "url": "http://pub1.di.fm/di_psybient",
-            "network": [
-                "difm"
-            ]
-
-        },
-        "mock": {
-            "url": "http://localhost:12345",
-            "network": [
-                "mock"
             ]
         }
     }
