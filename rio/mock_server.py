@@ -3,9 +3,10 @@
 
 from __future__ import division, print_function
 
+import itertools
+import os
 import sys
 import time
-import itertools
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
@@ -40,13 +41,14 @@ class Handler(BaseHTTPRequestHandler):
             (u"StreamTitle='fifth - sixth';", 10),
             (u"StreamTitle='AD - 5 AD AD AD AD AD';", 2)
         ))
-        f = open('/tmp/Afterlife - Midnight.mp3', 'r')
-        data = itertools.cycle(by_chunks_of(50, f.read()))
-        while True:
-            start_time = time.time()
-            output_buffer.icy, tm = next(icy)
-            while time.time() - start_time < tm:
-                output_buffer.write(next(data))
+        filename = os.path.join(os.path.dirname(__file__), 'sample.mp3')
+        with open(filename, 'r') as f:
+            data = itertools.cycle(by_chunks_of(50, f.read()))
+            while True:
+                start_time = time.time()
+                output_buffer.icy, tm = next(icy)
+                while time.time() - start_time < tm:
+                    output_buffer.write(next(data))
 
 
 def serve_on_port(host, port):
