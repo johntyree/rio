@@ -9,14 +9,14 @@ digraph G {
         upstream2 -> iterstream2
         upstream3 -> iterstream3
 
-        {iterstream1 iterstream2 iterstream3} -> adfilter
+        iterstream1 -> adfilter1 -> multiplexer
+        iterstream2 -> adfilter2 -> multiplexer
+        iterstream3 -> adfilter3 -> multiplexer
 
-        adfilter -> multiplexer
 
         multiplexer -> {client1, client2}
 
         client1 -> HDD
         client2 -> HTTP_Stream
-
 
 }
