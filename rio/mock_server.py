@@ -14,8 +14,11 @@ from .utilities import unicode_dammit, render_dict, by_chunks_of
 from .server import show_connection
 from .streamer import MetadataInjector
 
-ICY_METAINT = 10000
+import logging
+logger = logging.getLogger(__name__)
 
+
+ICY_METAINT = 10000
 
 
 
@@ -23,7 +26,8 @@ class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
         pretty_headers = unicode_dammit(render_dict(self.headers))
-        print(u"\n{}\n".format(pretty_headers), file=sys.stderr)
+        show_connection(pretty_headers)
+
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')
         self.send_header('icy-metaint', ICY_METAINT)
@@ -45,6 +49,7 @@ class Handler(BaseHTTPRequestHandler):
             while True:
                 start_time = time.time()
                 output_buffer.icy, tm = next(icy)
+                logger.info("New ICY: {!r}".format(output_buffer.icy))
                 while time.time() - start_time < tm:
                     output_buffer.write(next(data))
 
