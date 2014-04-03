@@ -10,16 +10,13 @@ import time
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
-from .utilities import unicode_dammit, render_dict
+from .utilities import unicode_dammit, render_dict, by_chunks_of
+from .server import show_connection
 from .streamer import MetadataInjector
 
 ICY_METAINT = 10000
 
 
-def by_chunks_of(sz, tail):
-    while tail:
-        head, tail = tail[:sz], tail[sz:]
-        yield head
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -43,7 +40,8 @@ class Handler(BaseHTTPRequestHandler):
         ))
         filename = os.path.join(os.path.dirname(__file__), 'sample.mp3')
         with open(filename, 'r') as f:
-            data = itertools.cycle(by_chunks_of(1024, f.read()))
+            data = itertools.cycle(
+                itertools.imap(b''.join, by_chunks_of(1024, f.read())))
             while True:
                 start_time = time.time()
                 output_buffer.icy, tm = next(icy)

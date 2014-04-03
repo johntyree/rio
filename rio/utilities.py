@@ -4,11 +4,13 @@
 from __future__ import print_function
 
 import functools
+import itertools as it
 import json
 import mimetools
 import os
 import sys
 import time
+from math import ceil
 
 
 def sanitize_name(name):
@@ -29,6 +31,18 @@ def trace(f):
         print(ret, file=sys.stderr)
         return value
     return wrapper
+
+
+def pad(s, pad=b'\x00', align=16):
+    width = int(ceil(len(s) / float(align)) * align)
+    return s.ljust(width, pad)
+
+
+def by_chunks_of(sz, tail):
+    head = tuple(it.islice(tail, sz))
+    while head:
+        yield head
+        head = tuple(it.islice(tail, sz))
 
 
 def persistently_apply(f, args=(), kwargs={}, tries=10):
