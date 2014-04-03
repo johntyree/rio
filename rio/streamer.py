@@ -4,196 +4,24 @@
 from __future__ import print_function
 
 import os
-import re
-import socket
 import sys
 import time
-from math import ceil
 
-try:
-    from urllib import FancyURLopener
-except ImportError:
-    from urllib.request import FancyURLopener
+from .buffered_request import BufferedRequest
 
 from .utilities import (
-    elapsed_since, render_headers, unicode_dammit,
+    elapsed_since, render_headers,
     CompleteFileWriter, sanitize_name)
 from .config import RioConfig
 
-artist_title_regex = re.compile(
-    ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.+?)';")
-stream_title = u"{artist} - {title}"
-
-
-def rotten(meat, bacteria):
-    """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
-    infections = [bacterium.pattern
-                  for bacterium in bacteria if bacterium.search(meat)]
-    if not artist_title_regex.search(meat):
-        infections.append('No title')
-    return infections
+import logging
+logger = logging.getLogger(__name__)
 
 
 def show_rotten(raw, bad, file=sys.stderr):
     for b in bad:
         msg = '''Rotten! {!r} <-> {!r}'''.format(raw, b)
         print(msg, file=file)
-
-
-def parse_meat(stream):
-    """ Read the metadata out of an IcyCast stream assuming that the
-    metadata begins at byte 0.
-
-    """
-    meatlen = stream.read(1)
-    meatlen = ord(meatlen) * 16
-    meat = stream.read(meatlen).strip()
-    if meat:
-        return unicode_dammit(meat).encode('utf8')
-
-
-def format_meat(meat):
-    meat = unicode_dammit(meat)
-    match = artist_title_regex.search(meat)
-    if match:
-        data = match.groupdict()
-        if data['artist']:
-            meat = stream_title.format(**data)
-        else:
-            meat = u'{title}'.format(**data)
-    else:
-        meat = u"Unknown format: {!r}".format(meat)
-    meat = meat.replace(u'\x00', u'').strip()
-    return meat
-
-
-class BufferedRequest(object):
-    """ A buffer for a file-like object, providing a read(size)
-    method similar to other buffer IO.
-
-    """
-    def __init__(self, url=None, headers=None, chunksize=1024*10):
-        self.chunksize = chunksize
-        self.buf = bytes()
-        if url:
-            self.get(url, headers)
-
-    def get(self, url, headers=None):
-        o = FancyURLopener()
-        if headers:
-            for k, v in headers.items():
-                o.addheader(k, v)
-        self.req = o.open(url)
-        return self
-
-    @property
-    def ok(self):
-        return 200 <= self.req.code < 300
-
-    def read(self, size):
-        while size > len(self.buf):
-            # FIXME: Use some kind of sensible fifo
-            self.buf += self.req.read(self.chunksize)
-        ret, self.buf = self.buf[:size], self.buf[size:]
-        return ret
-
-    def appendleft(self, data):
-        self.buf = data + self.buf
-        return self
-
-    def peek(self, size):
-        """ Return the first size bytes of the stream without removal.
-
-        a = buf.peek(10)
-        b = buf.read(10)
-        assert a == b  # succeeds
-        """
-        val = self.read(size)
-        self.appendleft(val)
-        return val
-
-
-class MetadataInjector(object):
-    """ A wrapper around an output buffer that inserts ICY format metadata
-    every `metaint` bytes.
-
-    """
-
-    def __init__(self, output_buffer, metaint):
-        self.output_buffer = output_buffer
-        self.metaint = self._bytes_remaining = metaint
-        self._icy = b""
-        self._last_icy = b""
-        self._current_icy = b""
-
-    def __del__(self):
-        # Make sure we leave the client stream at the beginning of a chunk to
-        # avoid going out of sync when the next incoming stream starts.
-        try:
-            if self._bytes_remaining:
-                self.flush()
-        except socket.error:
-            pass
-
-    def icy():
-        doc = "The icy metadata, aligned to 16 bytes."
-
-        def fget(self):
-            return self._icy
-
-        def fset(self, value):
-            # Convert to utf8
-            value = unicode_dammit(value).encode('utf8')
-            # Pad it out to a multiple of 16 bytes
-            icylen = int(ceil(len(value) / 16.0)) * 16
-            padding = icylen - len(value)
-            self._last_icy = self._current_icy
-            # We'd like to use bytes(padding) here, but it behaves
-            # completely differently in python 2.x and 3.x ...
-            self._icy = value + b'\x00' * padding
-        return locals()
-    icy = property(**icy())
-
-    @property
-    def last_icy(self):
-        return self._last_icy
-
-    def write(self, buf):
-        # If we have metadata to forward
-        if self.metaint >= 0:
-            # If the buf len is large enough that we'll need to inject, write
-            # out as much as needed, then inject
-            while len(buf) >= self._bytes_remaining:
-                idx = self._bytes_remaining
-                data, buf = buf[:idx], buf[idx:]
-                self.output_buffer.write(data)
-                self._bytes_remaining = self.metaint
-                self.write_icy()
-            self._bytes_remaining -= len(buf)
-        # Here, we'll have between 0 and metaint - 1 left to write so it's safe
-        # to push it all out. If there's no metadata, it's always safe.
-        self.output_buffer.write(buf)
-
-    def flush(self):
-        self.output_buffer.write(b'\x00' * self._bytes_remaining)
-        self.write_icy()
-        self._bytes_remaining = self.metaint
-
-    def write_icy(self):
-        if self.icy:
-            # First tell how long it will be in multiples of 16 bytes
-            icylen = chr(len(self.icy) // 16).encode('utf8')
-            self.output_buffer.write(icylen)
-            # Then write it out
-            self.output_buffer.write(self.icy)
-            # Erase the metadata to avoid constantly rebroadcasting. We'll
-            # reset it when we get an update from upstream.
-            self._last_icy = self._current_icy
-            self._current_icy = self._icy
-            self._icy = b""
-        elif self.metaint:
-            # If no metadata, but they're expecting some, push out a NULL byte
-            self.output_buffer.write(b'\x00')
 
 
 def build_headers(buf):
@@ -223,17 +51,18 @@ def icystream(stream, output_buffer, config=None):
 
     config = config or RioConfig()
 
-    print("\nStarting {!s}".format(stream))
+    msg = "\nStarting {!s}".format(stream)
+    logger.info(msg)
+    print(msg)
 
     elapsed = ''
-    fout = sys.stdout
 
     # Start the request, asking for metadata intervals and buffer
     # the input stream
     stream.data = BufferedRequest(stream.url, headers={'icy-metadata': 1})
     req = stream.data.req
     if not stream.data.ok:
-        print("HTTP Error code {}".format(req.code), file=fout)
+        logger.warning("HTTP Error code {}".format(req.code))
         return
 
     # If we got no headers back, assume that they are in-line. Everything
@@ -244,23 +73,25 @@ def icystream(stream, output_buffer, config=None):
 
     # Will we be receiving icy metadata? Forward it.
     interval = int(req.headers.get('icy-metaint', 0))
-    if interval and config.forward_metadata:
-        output_buffer = MetadataInjector(output_buffer, config.ICY_METAINT)
-    else:
-        output_buffer = MetadataInjector(output_buffer, 0)
+    # if interval and config.forward_metadata:
+        # output_buffer = MetadataInjector(output_buffer, config.ICY_METAINT)
+    # else:
+        # output_buffer = MetadataInjector(output_buffer, 0)
     if not interval:
-        print(u"No metadata recieved from stream."
-              u" Ad detection will not work.", file=fout)
+        logger.warning(u"No metadata recieved from stream."
+                       u" Ad detection will not work.")
 
     start_time = time.time()
 
+    bacteria = config.bacteria_for_stream(stream)
+
     msg = render_headers(req.headers)
     msg = '\t' + msg.replace('\n', '\n\t')
-    print(msg)
-    print(u"Networks: {!r}".format(stream.networks))
-    bacteria = config.bacteria_for_stream(stream)
-    print(u"Ad Sentinels: {!r}".format(
+    msg += u"\nNetworks: {!r}".format(stream.networks))
+    msg += u"\nAd Sentinels: {!r}".format(
         [b.pattern.decode('utf8') for b in bacteria]))
+    print(msg)
+    logger.info(msg)
 
     save_file = None
 
