@@ -3,7 +3,6 @@
 
 from __future__ import print_function
 
-import sys
 from SocketServer import ForkingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
