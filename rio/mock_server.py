@@ -5,7 +5,6 @@ from __future__ import division, print_function
 
 import itertools
 import os
-import sys
 import time
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
@@ -20,11 +19,21 @@ logger = logging.getLogger(__name__)
 
 ICY_METAINT = 10000
 
+icy_info = [("StreamTitle='{}';".format(s), t) for s, t in [
+            (u"AD - 1 AD AD", 1),
+            (u"first - second", 4),
+            (u"3 AD AD AD", 1),
+            (u"third - fourth", 4),
+            (u"AD - 4 AD AD AD AD", 1),
+            (u"fifth - sixth", 4),
+            (u"AD - 5 AD AD AD AD AD", 1)
+            ]]
 
 
 class Handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
+
         pretty_headers = unicode_dammit(render_dict(self.headers))
         show_connection(pretty_headers)
 
@@ -33,15 +42,7 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('icy-metaint', ICY_METAINT)
         self.end_headers()
         output_buffer = MetadataInjector(self.wfile, ICY_METAINT)
-        icy = itertools.cycle((
-            (u"StreamTitle='AD - 2 AD AD';", 2),
-            (u"StreamTitle='first - second';", 10),
-            (u"StreamTitle='3 AD AD AD';", 2),
-            (u"StreamTitle='third - fourth';", 10),
-            (u"StreamTitle='AD - 4 AD AD AD AD';", 2),
-            (u"StreamTitle='fifth - sixth';", 10),
-            (u"StreamTitle='AD - 5 AD AD AD AD AD';", 2)
-        ))
+        icy = itertools.cycle(icy_info)
         filename = os.path.join(os.path.dirname(__file__), 'sample.mp3')
         with open(filename, 'r') as f:
             data = itertools.cycle(
