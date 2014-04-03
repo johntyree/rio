@@ -11,6 +11,9 @@ from .config import RioConfig
 from .streamer import icystream
 from .utilities import render_headers
 
+import logging
+logger = logging.getLogger(__name__)
+
 
 class Handler(BaseHTTPRequestHandler):
 
@@ -18,11 +21,11 @@ class Handler(BaseHTTPRequestHandler):
         # FIXME: When the content-type changes between streams, we're probably
         # boned.
         config = RioConfig()
+
         self.headers['client'] = "{}:{}".format(*self.client_address)
         pretty_headers = render_headers(self.headers.dict)
-        msg = u"Client Connected:\n{}".format(pretty_headers)
-        msg = msg.replace('\n', '\n\t')
-        print(msg, file=sys.stderr)
+        show_connection(pretty_headers)
+
         config.forward_metadata = 'icy-metadata' in self.headers
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')
@@ -34,6 +37,12 @@ class Handler(BaseHTTPRequestHandler):
             icystream(stream, self.wfile, config=config)
         # except KeyboardInterrupt:
             # pass
+
+
+def show_connection(headers):
+    msg = u"Client Connected:\n{}".format(headers)
+    msg = msg.replace('\n', '\n\t')
+    logger.info(msg)
 
 
 class ForkingHTTPServer(ForkingMixIn, HTTPServer):
