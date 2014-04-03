@@ -5,14 +5,8 @@ digraph G {
 // Edit as you like. Whenever you save a legal graph
 // the layout in the graphviz window will be updated.
 
-        upstream1 -> iterstream1
-        upstream2 -> iterstream2
-        upstream3 -> iterstream3
-
-        iterstream1 -> adfilter1 -> multiplexer
-        iterstream2 -> adfilter2 -> multiplexer
-        iterstream3 -> adfilter3 -> multiplexer
-
+        upstream1 -> extract_icy1 -> stream_process1 -> icy_injector1 -> multiplexer
+        upstream2 -> extract_icy2 -> stream_process2 -> icy_injector2 -> multiplexer
 
         multiplexer -> {client1, client2}
 
