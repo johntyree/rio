@@ -41,7 +41,6 @@
         ]
     },
     "ad": {
-        "mock": [],
         "addictedtoradio": [
             "90s Dance & Beyond Channel - AddictedToRadio.com",
             "FX - Our-App-Approved-Apps"
@@ -54,7 +53,8 @@
             "More of the show after these messages",
             "Get Digitally Imported Premium",
             "S\\d+E\\d+",
-            "Job Opportunity at DI! www.di.fm/jobs"
+            "Job Opportunity at DI! www.di.fm/jobs",
+            "Get DI.fm Premium!"
         ],
         "beatlounge radio": [
             "BeatLounge Radio dot com"
@@ -217,7 +217,6 @@
             "network": [
                 "difm"
             ]
-
         },
         "di_ambient": {
             "url": "http://pub1.di.fm/di_ambient",
