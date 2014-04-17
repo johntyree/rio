@@ -41,7 +41,7 @@ class Handler(BaseHTTPRequestHandler):
 def show_connection(headers):
     msg = u"Client Connected:\n{}".format(headers)
     msg = msg.replace('\n', '\n\t')
-    logger.info(msg)
+    return msg
 
 
 class ForkingHTTPServer(ForkingMixIn, HTTPServer):

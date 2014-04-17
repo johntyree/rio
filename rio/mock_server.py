@@ -35,7 +35,9 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
 
         pretty_headers = unicode_dammit(render_dict(self.headers))
-        show_connection(pretty_headers)
+        msg = show_connection(pretty_headers)
+        logger.info(msg)
+        print(msg)
 
         self.send_response(200)
         self.send_header('Content-type', 'audio/mpeg')
