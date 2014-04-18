@@ -7,7 +7,7 @@ from SocketServer import ForkingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
 from .config import RioConfig
-from .streamer import icystream
+# from .streamer import icystream
 from .utilities import render_headers
 
 import logging
@@ -33,7 +33,8 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         # try:
         for stream in config.cycle_streams():
-            icystream(stream, self.wfile, config=config)
+            # icystream(stream, self.wfile, config=config)
+            pass
         # except KeyboardInterrupt:
             # pass
 
