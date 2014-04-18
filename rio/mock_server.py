@@ -5,19 +5,18 @@ from __future__ import division, print_function
 
 import itertools
 import os
-import time
 
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
-from .utilities import unicode_dammit, render_dict, by_chunks_of
+from .utilities import unicode_dammit, render_dict
 from .server import show_connection
-from .streamer import MetadataInjector
+from .icy_tools import format_icy
 
 import logging
 logger = logging.getLogger(__name__)
 
 
-ICY_METAINT = 10000
+ICY_METAINT = 8192
 
 icy_info = [("StreamTitle='{}';".format(s), t) for s, t in [
             (u"AD - 1 AD AD", 1),
@@ -28,6 +27,23 @@ icy_info = [("StreamTitle='{}';".format(s), t) for s, t in [
             (u"fifth - sixth", 4),
             (u"AD - 5 AD AD AD AD AD", 1)
             ]]
+
+
+def forever_file(f):
+    with open(f, 'rb') as f:
+        f = itertools.cycle(f.read())
+        while True:
+            yield ''.join(itertools.islice(f, ICY_METAINT))
+
+
+def generate_mock_stream(filename, icy_info):
+    stream = forever_file(filename)
+    for streamtitle, secs in itertools.cycle(icy_info):
+        icy = format_icy(streamtitle)
+        logger.info("New ICY: {!r}".format(icy))
+        yield next(stream) + icy
+        for i in range(t * 20):
+            yield next(stream) + b'\x00'
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -41,18 +57,10 @@ class Handler(BaseHTTPRequestHandler):
         self.send_header('Content-type', 'audio/mpeg')
         self.send_header('icy-metaint', ICY_METAINT)
         self.end_headers()
-        output_buffer = MetadataInjector(self.wfile, ICY_METAINT)
-        icy = itertools.cycle(icy_info)
         filename = os.path.join(os.path.dirname(__file__), 'sample.mp3')
-        with open(filename, 'r') as f:
-            data = itertools.cycle(
-                itertools.imap(b''.join, by_chunks_of(1024, f.read())))
-            while True:
-                start_time = time.time()
-                output_buffer.icy, tm = next(icy)
-                logger.info("New ICY: {!r}".format(output_buffer.icy))
-                while time.time() - start_time < tm:
-                    output_buffer.write(next(data))
+        stream = generate_mock_stream(filename, icy_info)
+        while True:
+            self.wfile.write(next(stream))
 
 
 def serve_on_port(host, port):
