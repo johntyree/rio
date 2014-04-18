@@ -59,9 +59,8 @@ def without_icy_repeats(icy_data_stream):
 
 
 def rebuffer_icy(metaint, icy_data_stream):
-    """ Return an iterable yielding new ``IcyData`` tuples from an
-    where the buf lengths are changed to ``metaint``. """
-
+    """ Return an iterable yielding new ``IcyData`` tuples from an ICY
+    stream where the buf lengths are changed to ``metaint``. """
     buf = b''
     transmit_icy = None
     for icy, data in icy_data_stream:
