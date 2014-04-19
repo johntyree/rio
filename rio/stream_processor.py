@@ -3,11 +3,12 @@
 
 from __future__ import division, print_function
 
+import logging
 import re
 
+from .icy_tools import reconstruct_icy
 from .utilities import unicode_dammit
 
-import logging
 logger = logging.getLogger(__name__)
 
 
@@ -30,6 +31,17 @@ def icy_info_buf_size(icy_data_stream):
 
         # Add this chunk of data to our tally
         current_bufsize += len(icy_data.data)
+
+
+def write_stream_to_buf(icy_data_stream, buf, with_icy=True):
+    """ Write the stream to a buffer, optionally with ICYINFO in it. """
+
+    if with_icy:
+        for chunk in reconstruct_icy(icy_data_stream):
+            buf.write(chunk)
+    else:
+        for icy_data in icy_data_stream:
+                buf.write(icy_data.data)
 
 
 def regex_matches(icy_data_stream, regexen):
