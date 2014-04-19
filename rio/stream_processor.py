@@ -29,7 +29,7 @@ def icy_info_buf_size(icy_data_stream):
             logger.info("ICYINFO({!r}) BEGIN".format(icy_data.info))
 
         # Add this chunk of data to our tally
-        current_bufsize += len(icy_data.buf)
+        current_bufsize += len(icy_data.data)
 
 
 def regex_matches(icy_data_stream, regexen):

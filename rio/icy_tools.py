@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-IcyData = namedtuple('IcyData', 'info buf')
+IcyData = namedtuple('IcyData', 'info data')
 
 
 def read_icy_info(stream):
@@ -52,7 +52,7 @@ def without_icy_repeats(icy_data_stream):
     prev = b''
     for icy_data in icy_data_stream:
         if icy_data.info == prev:
-            icy_data = IcyData(b'', icy_data.buf)
+            icy_data = IcyData(b'', icy_data.data)
         else:
             prev = icy_data.info
         yield icy_data
@@ -94,6 +94,6 @@ def reconstruct_icy(icy_data_stream):
     """ Return an iterable of raw ICY stream data from an iterable
     of IcyData. """
 
-    for msg, buf in icy_data_stream:
-        icy = format_icy(msg)
-        yield icy + buf
+    for info, data in icy_data_stream:
+        icy = format_icy(info)
+        yield icy + data
