@@ -41,17 +41,17 @@ class BufferedRequest(object):
         ret, self.buf = self.buf[:size], self.buf[size:]
         return ret
 
-    def appendleft(self, data):
+    def pushback(self, data):
         self.buf = data + self.buf
         return self
 
     def peek(self, size):
         """ Return the first size bytes of the stream without removal.
 
-        a = buf.peek(10)
-        b = buf.read(10)
-        assert a == b  # succeeds
+        >>> a = buf.peek(10)
+        >>> b = buf.read(10)
+        >>> assert a == b  # succeeds
         """
         val = self.read(size)
-        self.appendleft(val)
+        self.pushback(val)
         return val
