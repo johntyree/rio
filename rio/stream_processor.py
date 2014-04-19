@@ -70,16 +70,17 @@ def prettified_icy_info(icy_data_stream):
     stream_title = u"{artist} - {title}"
 
     for icy_data in icy_data_stream:
-
-        meat = unicode_dammit(icy_data.info)
-        match = artist_title_regex.search(meat)
-        if match:
-            data = match.groupdict()
-            if data['artist']:
-                meat = stream_title.format(**data)
+        meat = icy_data.info
+        if meat:
+            meat = unicode_dammit(icy_data.info)
+            match = artist_title_regex.search(meat)
+            if match:
+                data = match.groupdict()
+                if data['artist']:
+                    meat = stream_title.format(**data)
+                else:
+                    meat = u'{title}'.format(**data)
             else:
-                meat = u'{title}'.format(**data)
-        else:
-            meat = u"Unknown format: {!r}".format(meat)
-        meat = meat.replace(u'\x00', u'').strip()
+                meat = u"Unknown format: {!r}".format(meat)
+            meat = meat.replace(u'\x00', u'').strip()
         yield meat
