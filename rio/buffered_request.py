@@ -1,6 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # coding: utf8
-"""<+Module Description.+>"""
 
 from __future__ import division, print_function
 
