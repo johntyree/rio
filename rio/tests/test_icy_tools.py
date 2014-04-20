@@ -18,6 +18,7 @@ from ..utilities import by_chunks_of, pad
 class Test_IcyTools(unittest.TestCase):
 
     def test_without_icy_repeats(self):
+        """ Don't repeat ICYINFO if it hasn't changed. """
         self.in_stream = it.chain(
             (IcyData(b'foo', bytes(str(i))) for i in range(4)),
             (IcyData(b'barbar', bytes(str(i))) for i in range(4, 8)),
@@ -42,7 +43,7 @@ class Test_IcyTools(unittest.TestCase):
             self.assertTupleEqual(result, expected)
 
     def test_empty_parse_icy(self):
-        """ Extracting icy info from an empty string yields None. """
+        """ Extracting icy_data from an empty string yields None. """
         data = StringIO(b'')
         expected = []
         result = list(parse_icy(data, 10))
@@ -57,7 +58,7 @@ class Test_IcyTools(unittest.TestCase):
         self.assertSequenceEqual(result, expected)
 
     def test_no_data_extact_icy(self):
-        """ Extract icy info from a stream with metaint 0. """
+        """ Extract icy_data from a stream with metaint 0 (no data). """
         icy_strings = (b'\x010123456789abcdef',
                        b'\x0200112233445566778899aabbccddeeff',
                        b'\x01Que Pasa?\x00\x00\x00\x00\x00\x00\x00')
@@ -117,13 +118,13 @@ class Test_IcyTools(unittest.TestCase):
         icy_data_stream = (
             IcyData(i, b) for i, b in it.izip(icy_infos, buf))
 
-        result = list(rebuffer_icy(new_metaint, icy_data_stream))
+        result = list(rebuffer_icy(icy_data_stream, new_metaint))
         expected = [
             IcyData(i, b) for i, b in it.izip(exp_icy_infos, exp_buf)]
         self.assertListEqual(result, expected)
 
     def test_smaller_rebuffer_icy(self):
-        """ Correctly rebuffer to a slightly smaller chunk size. """
+        """ Rebuffer to a smaller ICY_METAINT. """
         old_metaint = 8
         new_metaint = 3
 
@@ -143,6 +144,7 @@ class Test_IcyTools(unittest.TestCase):
         self.assertListEqual(result, expected)
 
     def test_reconstruct_icy(self):
+        """ Reconstruct an icecast stream from icy_data. """
         in_stream = (
             IcyData(b'foo', b''.join(map(bytes, range(4)))),
             IcyData(b'barbar', b''.join(map(bytes, range(4, 8)))),
