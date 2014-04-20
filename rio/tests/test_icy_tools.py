@@ -50,11 +50,13 @@ class Test_IcyTools(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_no_icy_extact_icy(self):
-        icy_strings = (b'\x0000112233445566778899aabbccddeeff',
-                       b'\x00Que Pasa?\x00\x00\x00\x00\x00\x00\x00')
+        """ Extract icy_data from a stream with no icy. """
+        icy_strings = (
+            b'00112233445566778899aabbccddeeff\x00',
+            b'Que Pasa?\x00\x00\x00\x00\x00\x00\x00' + b'\x00' * 16 + b'\x00')
         stream = StringIO(b''.join(icy_strings))
         result = tuple(parse_icy(stream, 32))
-        expected = tuple(IcyData(b'', i[1:]) for i in icy_strings)
+        expected = tuple(IcyData(b'', i[:-1]) for i in icy_strings)
         self.assertSequenceEqual(result, expected)
 
     def test_no_data_extact_icy(self):
