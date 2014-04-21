@@ -66,7 +66,8 @@ def validate_icy_stream(icy_data_stream):
     the icy_data.info values are all printable."""
     for icy_data in icy_data_stream:
         info = icy_data.info
-        valid = all(c in string.printable for c in info)
+        good_chars = set(string.printable)
+        valid = all(c in good_chars for c in info)
         if not valid:
             logger.critical("icy_data.icy unprintable")
             raise StopIteration
