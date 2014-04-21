@@ -11,7 +11,7 @@ from math import ceil
 
 from ..icy_tools import (
     IcyData, parse_icy, format_icy, read_icy_info, rebuffer_icy,
-    without_icy_repeats, reconstruct_icy)
+    without_icy_repeats, reconstruct_icy, validate_icy_stream)
 from ..utilities import pad
 
 
@@ -41,6 +41,18 @@ class Test_IcyTools(unittest.TestCase):
         zipped = it.izip(without_icy_repeats(self.in_stream), self.out_stream)
         for result, expected in zipped:
             self.assertTupleEqual(result, expected)
+
+    def test_validate_icy_stream(self):
+        """ A valid icy stream passes non-destructive validity check """
+        icy_data_stream = [
+            IcyData(b'foo', b''.join(map(bytes, range(4)))),
+            IcyData(b'barbar', b''.join(map(bytes, range(4, 8)))),
+            IcyData(b'baz' * 6, b''.join(map(bytes, range(8, 10)))),
+            IcyData(b'', b''.join(map(bytes, range(10, 13)))),
+            IcyData(b'quux', b''.join(map(bytes, range(13, 16)))),
+        ]
+        validated = list(validate_icy_stream(icy_data_stream))
+        self.assertListEqual(icy_data_stream, validated)
 
     def test_empty_parse_icy(self):
         """ Extracting icy_data from an empty string yields None. """
