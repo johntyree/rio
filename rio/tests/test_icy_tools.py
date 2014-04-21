@@ -12,7 +12,7 @@ from math import ceil
 from ..icy_tools import (
     IcyData, parse_icy, format_icy, read_icy_info, rebuffer_icy,
     without_icy_repeats, reconstruct_icy)
-from ..utilities import by_chunks_of, pad
+from ..utilities import pad
 
 
 class Test_IcyTools(unittest.TestCase):
@@ -106,44 +106,13 @@ class Test_IcyTools(unittest.TestCase):
         self.assertEqual(result, expected)
 
     def test_larger_rebuffer_icy(self):
-        """ Correctly rebuffer to a slightly larger chunk size. """
-        old_metaint = 3
-        new_metaint = 8
-
-        data0, data1 = it.tee(it.cycle(string.printable))
-        buf = it.imap(b''.join, by_chunks_of(old_metaint, data0))
-        exp_buf = it.imap(b''.join, by_chunks_of(new_metaint, data1))
-
-        icy_infos = 'foo barbar baz quux lork zerg guusje kriz'.split()
-        exp_icy_infos = 'foo baz zerg'.split()
-
-        icy_data_stream = (
-            IcyData(i, b) for i, b in it.izip(icy_infos, buf))
-
-        result = list(rebuffer_icy(icy_data_stream, new_metaint))
-        expected = [
-            IcyData(i, b) for i, b in it.izip(exp_icy_infos, exp_buf)]
-        self.assertListEqual(result, expected)
+        """ Rebuffer to a larger ICY_METAINT. """
+        self._rebuffer_tester(8, 12)
 
     def test_smaller_rebuffer_icy(self):
         """ Rebuffer to a smaller ICY_METAINT. """
-        old_metaint = 8
-        new_metaint = 3
-
-        data0, data1 = it.tee(it.cycle(string.printable))
-        buf = it.imap(b''.join, by_chunks_of(old_metaint, data0))
-        exp_buf = it.imap(b''.join, by_chunks_of(new_metaint, data1))
-
-        icy_infos = 'foo barbar baz'.split()
-        exp_icy_infos = 'foo foo foo barbar barbar barbar baz baz'.split()
-
-        icy_data_stream = (
-            IcyData(i, b) for i, b in it.izip(icy_infos, buf))
-
-        result = list(rebuffer_icy(new_metaint, icy_data_stream))
-        expected = [
-            IcyData(i, b) for i, b in it.izip(exp_icy_infos, exp_buf)]
-        self.assertListEqual(result, expected)
+        self._rebuffer_tester(12, 8)
+        return
 
     def test_reconstruct_icy(self):
         """ Reconstruct an icecast stream from icy_data. """
@@ -163,3 +132,40 @@ class Test_IcyTools(unittest.TestCase):
             + b'\x01' + b'quux' + b'\x00' * 12 + b'131415'
         )
         self.assertEqual(result, expected)
+
+    def _rebuffer_tester(self, old_metaint, new_metaint):
+        chunks = 8
+
+        source = string.printable
+        buflen = max(old_metaint, new_metaint) * chunks
+        repeats = int(ceil(buflen / len(source)))
+        data = source * repeats
+        ratio = new_metaint / old_metaint
+
+        icy_infos = 'foo barbar baz quux lork zerg nory guusje'.split()
+        exp_icy_infos = [icy_infos[int(i * ratio)]
+                         for i in range(int(ceil(chunks / ratio)))
+                         if int(i * ratio) < len(icy_infos)]
+
+        buf = (data[i:i + old_metaint]
+               for i in range(0, len(data), old_metaint))
+        exp_buf = (data[i:i + new_metaint]
+                   for i in range(0, len(data), new_metaint))
+
+        icy_data_stream = it.starmap(IcyData, it.izip(icy_infos, buf))
+
+        result = list(rebuffer_icy(icy_data_stream, new_metaint))
+        expected = list(it.starmap(IcyData, it.izip(exp_icy_infos, exp_buf)))
+
+        # Pad the end of the data if it doesn't line up perfectly
+        trim = len(result[-1].data) - len(result[-1].data.rstrip(b'\x00'))
+        idx = slice(0, -trim if trim else None)
+        trimmed = expected[-1].data[idx] + b'\x00' * trim
+        expected[-1] = IcyData(expected[-1].info, trimmed)
+
+        self.assertListEqual(result, expected)
+
+if __name__ == '__main__':
+    import nose  # noqa
+    import cProfile
+    cProfile.run('nose.main()', sort='cumtime')
