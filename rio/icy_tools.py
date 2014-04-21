@@ -104,9 +104,7 @@ def rebuffer_icy(icy_data_stream, metaint):
                 # the buffer with 'old' icy info. Thus, the next block needs
                 # the latest icy info.
                 transmit_icy = icy
-            transmitted = True
-        if transmitted:
-            transmit_icy = icy
+                transmitted = True
 
     if buf:
         # Flush out whatever is left
