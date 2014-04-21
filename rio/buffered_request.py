@@ -39,14 +39,14 @@ class BufferedRequest(object):
             self.req.headers = self.build_headers(self)
         return self
 
-    def _build_headers(buf):
+    def _build_headers():
         """ Read the stream until the first blank line, building up a header
         dictionary.
 
         """
         logger.debug("searching for headers in stream")
         hdrs = {}
-        data = buf.read(4096)
+        data = self.read(4096)
         while True:
             line, _, data = data.partition(b'\r\n')
             if not line:
