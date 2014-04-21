@@ -19,14 +19,14 @@ class Test_IcyTools(unittest.TestCase):
 
     def test_without_icy_repeats(self):
         """ Don't repeat ICYINFO if it hasn't changed. """
-        self.in_stream = it.chain(
+        in_stream = it.chain(
             (IcyData(b'foo', bytes(str(i))) for i in range(4)),
             (IcyData(b'barbar', bytes(str(i))) for i in range(4, 8)),
             (IcyData(b'baz', bytes(str(i))) for i in range(8, 10)),
             (IcyData(b'', bytes(str(i))) for i in range(10, 13)),
             (IcyData(b'quux', bytes(str(i))) for i in range(13, 16)),
         )
-        self.out_stream = it.chain(
+        out_stream = it.chain(
             (IcyData(b'foo', b'0'),),
             (IcyData(b'', bytes(str(i))) for i in range(1, 4)),
             (IcyData(b'barbar', b'4'),),
@@ -38,7 +38,7 @@ class Test_IcyTools(unittest.TestCase):
             (IcyData(b'', bytes(str(i))) for i in range(14, 16)),
         )
 
-        zipped = it.izip(without_icy_repeats(self.in_stream), self.out_stream)
+        zipped = it.izip(without_icy_repeats(in_stream), out_stream)
         for result, expected in zipped:
             self.assertTupleEqual(result, expected)
 
