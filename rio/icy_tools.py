@@ -17,14 +17,15 @@ IcyData = namedtuple('IcyData', 'info data')
 
 
 def read_icy_info(stream):
-    """ Read and return the metadata out of an IcyCast stream assuming
+    """ Read and return the metadata out of an IceCast stream assuming
     that the metadata begins at byte 0.
 
     If there is no metadata return None.
 
     """
+    # FIXME: when is it ok to return None?
     meatlen = stream.read(1)
-    if meatlen:
+    if meatlen:  # this is True for b'\x00'
         meatlen = ord(meatlen) * 16
         meat = stream.read(meatlen).strip()
         return unicode_dammit(meat).encode('utf8')
@@ -43,6 +44,7 @@ def parse_icy(stream, metaint):
 def format_icy(icy_info):
     """ Return the icy_info as a 16-byte aligned bytestring, with an
     extra size byte at the front, as needed for ICY streams. """
+    logger.debug("formatting icy_info {!r}".format(icy_info))
     icy = pad(icy_info, align=16, pad='\x00')
     return chr(int(ceil(len(icy) / 16.0))).encode('ascii') + icy
 
@@ -73,10 +75,18 @@ def validate_icy_stream(icy_data_stream):
 
 def rebuffer_icy(icy_data_stream, metaint):
     """ Return an iterable yielding new ``IcyData`` tuples from an ICY
-    stream where the buf lengths are changed to ``metaint``. """
+    stream where the buf lengths are changed to ``metaint``.
+
+
+    We tag outgoing data with the tag from the *first* byte of that
+    data.
+    """
     buf = b''
     transmit_icy = None
     for icy, data in icy_data_stream:
+        logger.debug('loop begin: icy({!r}), data({!r}), buf({!r})'
+                     ' transmit_icy({!r})'.format(
+                         icy, data, buf, transmit_icy))
         if not buf:
             # If the buffer is empty there is no leftover icy info
             transmit_icy = icy
@@ -86,6 +96,7 @@ def rebuffer_icy(icy_data_stream, metaint):
         while len(buf) >= metaint:
             transmit_buf, buf = buf[:metaint], buf[metaint:]
             icy_data = IcyData(transmit_icy, transmit_buf)
+            logger.debug("transmit chunk {!r}".format(icy_data))
             yield icy_data
             if not transmitted:
                 # Because we immediately transmit as much as possible,
@@ -100,7 +111,10 @@ def rebuffer_icy(icy_data_stream, metaint):
     if buf:
         # Flush out whatever is left
         padding = metaint - len(buf)
-        yield IcyData(icy, buf + b'\x00' * padding)
+        data = buf + b'\x00' * padding
+        icy_data = IcyData(icy, data)
+        logger.debug("transmit chunk {!r}".format(icy_data))
+        yield icy_data
 
 
 def reconstruct_icy(icy_data_stream):
