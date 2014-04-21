@@ -75,7 +75,7 @@ class Test_IcyTools(unittest.TestCase):
         """ Extract icy_data from a stream with metaint 0 (no data). """
         icy_strings = (b'\x010123456789abcdef',
                        b'\x0200112233445566778899aabbccddeeff',
-                       b'\x01Que Pasa?\x00\x00\x00\x00\x00\x00\x00')
+                       b'\x01Que Pasa?')
         stream = StringIO(b''.join(icy_strings))
         result = tuple(parse_icy(stream, 0))
         expected = tuple(IcyData(i[1:], b'') for i in icy_strings)

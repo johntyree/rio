@@ -36,7 +36,7 @@ def parse_icy(stream, metaint):
     data = stream.read(metaint)
     icy = read_icy_info(stream)
     while data or icy:
-        yield IcyData(icy, data)
+        yield IcyData(icy.rstrip('\x00'), data)
         data = stream.read(metaint)
         icy = read_icy_info(stream)
 
