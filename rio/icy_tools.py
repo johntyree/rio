@@ -33,12 +33,12 @@ def read_icy_info(stream):
 
 def parse_icy(stream, metaint):
     """ Yield tuples of (info, buf) indefinitely. """
-    icy = read_icy_info(stream)
     data = stream.read(metaint)
-    while icy is not None:
+    icy = read_icy_info(stream)
+    while data or icy:
         yield IcyData(icy, data)
-        icy = read_icy_info(stream)
         data = stream.read(metaint)
+        icy = read_icy_info(stream)
 
 
 def format_icy(icy_info):
