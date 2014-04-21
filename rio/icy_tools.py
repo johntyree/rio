@@ -5,6 +5,7 @@ from __future__ import division, print_function
 
 from collections import namedtuple
 from math import ceil
+import string
 
 from .utilities import unicode_dammit, pad
 
@@ -58,7 +59,19 @@ def without_icy_repeats(icy_data_stream):
         yield icy_data
 
 
-def rebuffer_icy(metaint, icy_data_stream):
+def validate_icy_stream(icy_data_stream):
+    """ Return an iterable yielding the same icy_data_stream as long as
+    the icy_data.info values are all printable."""
+    for icy_data in icy_data_stream:
+        info = icy_data.info
+        valid = all(c in string.printable for c in info)
+        if not valid:
+            logger.critical("icy_data.icy unprintable")
+            raise StopIteration
+        yield icy_data
+
+
+def rebuffer_icy(icy_data_stream, metaint):
     """ Return an iterable yielding new ``IcyData`` tuples from an ICY
     stream where the buf lengths are changed to ``metaint``. """
     buf = b''
