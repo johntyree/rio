@@ -38,10 +38,10 @@ def write_stream_to_buf(icy_data_stream, buf, with_icy=True):
 
     if with_icy:
         for chunk in reconstruct_icy(icy_data_stream):
-            buf.write(chunk)
+            yield buf.write(chunk)
     else:
         for icy_data in icy_data_stream:
-                buf.write(icy_data.data)
+            yield buf.write(icy_data.data)
 
 
 def regex_matches(icy_data_stream, regexen):
