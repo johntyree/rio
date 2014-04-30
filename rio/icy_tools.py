@@ -86,9 +86,6 @@ def rebuffer_icy(icy_data_stream, metaint):
     buf = b''
     transmit_icy = None
     for icy, data in icy_data_stream:
-        logger.debug('loop begin: icy({!r}), data({!r}), buf({!r})'
-                     ' transmit_icy({!r})'.format(
-                         icy, data, buf, transmit_icy))
         if not buf:
             # If the buffer is empty there is no leftover icy info
             transmit_icy = icy
