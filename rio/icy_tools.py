@@ -123,4 +123,4 @@ def reconstruct_icy(icy_data_stream):
 
     for info, data in icy_data_stream:
         icy = format_icy(info)
-        yield icy + data
+        yield data + icy

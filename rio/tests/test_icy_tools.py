@@ -155,11 +155,11 @@ class Test_IcyTools(unittest.TestCase):
         )
         result = b''.join(reconstruct_icy(in_stream))
         expected = (
-            b'\x01' + b'foo' + b'\x00' * 13 + b'0123'
-            + b'\x01' + b'barbar' + b'\x00' * 10 + b'4567'
-            + b'\x02' + b'baz' * 6 + b'\x00' * 14 + b'89'
-            + b'\x00' + b'' + b'101112'
-            + b'\x01' + b'quux' + b'\x00' * 12 + b'131415'
+            b'0123' + b'\x01' + b'foo' + b'\x00' * 13
+            + b'4567' + b'\x01' + b'barbar' + b'\x00' * 10
+            + b'89' + b'\x02' + b'baz' * 6 + b'\x00' * 14
+            + b'101112' + b'\x00' + b'' + b'\x00' * 0
+            + b'131415' + b'\x01' + b'quux' + b'\x00' * 12
         )
         self.assertEqual(result, expected)
 
