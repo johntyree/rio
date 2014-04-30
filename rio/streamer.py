@@ -18,12 +18,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def show_rotten(raw, bad, file=sys.stderr):
-    for b in bad:
-        msg = '''Rotten! {!r} <-> {!r}'''.format(raw, b)
-        print(msg, file=file)
-
-
 def build_headers(buf):
     """ Read the stream until the first blank line, building up a header
     dictionary.
@@ -73,10 +67,6 @@ def icystream(stream, output_buffer, config=None):
 
     # Will we be receiving icy metadata? Forward it.
     interval = int(req.headers.get('icy-metaint', 0))
-    # if interval and config.forward_metadata:
-        # output_buffer = MetadataInjector(output_buffer, config.ICY_METAINT)
-    # else:
-        # output_buffer = MetadataInjector(output_buffer, 0)
     if not interval:
         logger.warning(u"No metadata recieved from stream."
                        u" Ad detection will not work.")
@@ -87,9 +77,9 @@ def icystream(stream, output_buffer, config=None):
 
     msg = render_headers(req.headers)
     msg = '\t' + msg.replace('\n', '\n\t')
-    msg += u"\nNetworks: {!r}".format(stream.networks))
+    msg += u"\nNetworks: {!r}".format(stream.networks)
     msg += u"\nAd Sentinels: {!r}".format(
-        [b.pattern.decode('utf8') for b in bacteria]))
+        [b.pattern.decode('utf8') for b in bacteria])
     print(msg)
     logger.info(msg)
 
