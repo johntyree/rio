@@ -5,7 +5,6 @@ from __future__ import division, print_function
 
 from collections import namedtuple
 from math import ceil
-import string
 
 from .utilities import unicode_dammit, pad
 
@@ -63,12 +62,14 @@ def without_icy_repeats(icy_data_stream):
 
 def validate_icy_stream(icy_data_stream):
     """ Return an iterable yielding the same icy_data_stream as long as
-    the icy_data.info values are all printable."""
+    icy_data.info contains no values between 1 and 31 and STREAM does not
+    appear in icy_data.data. """
     for icy_data in icy_data_stream:
         info = icy_data.info
-        good_chars = set(string.printable)
-        valid = all(c in good_chars for c in info)
-        if not valid:
+        bad_chars = set(chr(i) for i in range(1, 32))
+        info_valid = all(c not in bad_chars for c in info)
+        data_valid = "stream" not in icy_data.data.lower()
+        if not info_valid or not data_valid:
             logger.critical("icy_data.icy unprintable")
             raise StopIteration
         yield icy_data

@@ -42,17 +42,35 @@ class Test_IcyTools(unittest.TestCase):
         for result, expected in zipped:
             self.assertTupleEqual(result, expected)
 
-    def test_validate_icy_stream(self):
+    def test_validate_icy_stream_good(self):
         """ A valid icy stream passes non-destructive validity check """
         icy_data_stream = [
-            IcyData(b'foo', b''.join(map(bytes, range(4)))),
-            IcyData(b'barbar', b''.join(map(bytes, range(4, 8)))),
-            IcyData(b'baz' * 6, b''.join(map(bytes, range(8, 10)))),
-            IcyData(b'', b''.join(map(bytes, range(10, 13)))),
+            IcyData(u'école'.encode('utf-8'),
+                    b''.join(map(bytes, range(4)))),
+            IcyData(u'þíóáñ'.encode('utf-8'),
+                    b''.join(map(bytes, range(4, 8)))),
+            IcyData(u'éígïábñÓÍÍÑG¨'.encode('utf-8') * 6,
+                    b''.join(map(bytes, range(8, 10)))),
+            IcyData(b'\x33', b''.join(map(bytes, range(10, 13)))),
             IcyData(b'quux', b''.join(map(bytes, range(13, 16)))),
         ]
         validated = list(validate_icy_stream(icy_data_stream))
         self.assertListEqual(icy_data_stream, validated)
+
+    def test_validate_icy_stream_bad(self):
+        """ An invalid icy stream fails non-destructive validity check """
+        icy_data_stream = [
+            IcyData(u'école'.encode('utf-8'),
+                    b''.join(map(bytes, range(4)))),
+            IcyData(u'þíóáñ'.encode('utf-8'),
+                    b''.join(map(bytes, range(4, 8)))),
+            IcyData(u'éígïábñÓÍÍÑG¨'.encode('utf-8') * 6,
+                    b''.join(map(bytes, range(8, 10)))),
+            IcyData(b'\x03', b''.join(map(bytes, range(10, 13)))),
+            IcyData(b'quux', b''.join(map(bytes, range(13, 16)))),
+        ]
+        validated = list(validate_icy_stream(icy_data_stream))
+        self.assertListEqual(icy_data_stream[:3], validated)
 
     def test_empty_parse_icy(self):
         """ Extracting icy_data from an empty string yields None. """
