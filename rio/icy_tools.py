@@ -68,7 +68,7 @@ def validate_icy_stream(icy_data_stream):
         info = icy_data.info
         bad_chars = set(chr(i) for i in range(1, 32))
         info_valid = all(c not in bad_chars for c in info)
-        data_valid = "stream" not in icy_data.data.lower()
+        data_valid = "streamtitle" not in icy_data.data.lower()
         if not info_valid or not data_valid:
             logger.critical("icy_data.icy unprintable")
             raise StopIteration
