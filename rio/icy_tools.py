@@ -3,7 +3,7 @@
 
 from __future__ import division, print_function
 
-from collections import namedtuple
+import itertools as it
 from math import ceil
 
 from .utilities import unicode_dammit, pad
@@ -12,7 +12,23 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-IcyData = namedtuple('IcyData', 'info data')
+class IcyData(object):
+
+    def __init__(self, info, data, tags=None):
+        """A chunk of stream data with its ICY_INFO."""
+        self.info = info
+        self.data = data
+        self.tags = tags if tags is not None else set()
+
+    def __iter__(self):
+        return iter((self.info, self.data))
+
+    def __repr__(self):
+        return "IcyData(info={info!r}, data={data!r}, tags={tags!r})".format(
+            **vars(self))
+
+    def __eq__(self, other):
+        return vars(self) == vars(other)
 
 
 def read_icy_info(stream):
@@ -38,6 +54,12 @@ def parse_icy(stream, metaint):
         yield IcyData(icy.rstrip('\x00'), data)
         data = stream.read(metaint)
         icy = read_icy_info(stream)
+
+
+def takewhile_tags(f, icy_data_stream, reduction=all):
+    def reduce_tags(icy_data):
+        return reduction(f(t) for t in icy_data.tags)
+    return it.takewhile(reduce_tags, icy_data_stream)
 
 
 def format_icy(icy_info):

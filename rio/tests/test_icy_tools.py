@@ -11,7 +11,7 @@ from math import ceil
 
 from ..icy_tools import (
     IcyData, parse_icy, format_icy, read_icy_info, rebuffer_icy,
-    without_icy_repeats, reconstruct_icy, validate_icy_stream)
+    without_icy_repeats, reconstruct_icy, validate_icy_stream, takewhile_tags)
 from ..utilities import pad
 
 
@@ -40,7 +40,7 @@ class Test_IcyTools(unittest.TestCase):
 
         zipped = it.izip(without_icy_repeats(in_stream), out_stream)
         for result, expected in zipped:
-            self.assertTupleEqual(result, expected)
+            self.assertEqual(result, expected)
 
     def test_validate_icy_stream_good(self):
         """ A valid icy stream passes non-destructive validity check """
@@ -71,6 +71,16 @@ class Test_IcyTools(unittest.TestCase):
         ]
         validated = list(validate_icy_stream(icy_data_stream))
         self.assertListEqual(icy_data_stream[:3], validated)
+
+    def test_takewhile_tags(self):
+        icy_data_stream = [
+            IcyData('a', '0'),
+            IcyData('b', '1'),
+            IcyData('c', '2', set(['AD'])),
+            IcyData('d', '3')
+        ]
+        result = takewhile_tags(lambda s: not s == 'AD', icy_data_stream)
+        self.assertListEqual(icy_data_stream[:2], list(result))
 
     def test_empty_parse_icy(self):
         """ Extracting icy_data from an empty string yields None. """
