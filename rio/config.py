@@ -96,8 +96,8 @@ class Stream(object):
         return msg.format(**vars(self))
 
     def __repr__(self):
-        msg = "Stream(name={name}, url={url}, \
-               networks={networks}, data={data})"
+        msg = ("Stream(name={name!r}, url={url!r}, "
+               "networks={networks!r}, data={data!r})")
         return msg.format(**vars(self))
 
 
