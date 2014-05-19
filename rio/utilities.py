@@ -119,6 +119,30 @@ class Duplexer(object):
         return "{}: {!s}".format(self.__class__, self.children)
 
 
+class ClonableIterator(object):
+
+    def __init__(self, obj):
+        self._obj = obj
+
+    def __getattr__(self, attr):
+        logger.debug('Called: ClonableIterator.{!r}'.format(attr))
+        return getattr(self._obj, attr)
+
+    def clone(self):
+        ours, theirs = it.tee(self._obj)
+        self._obj = ours
+        return ClonableIterator(theirs)
+
+    def next(self):
+        return self._obj.next()
+
+    def __iter__(self):
+        return self
+
+    def __str__(self):
+        return "<ClonableIterator over {}>".format(self._obj)
+
+
 def render_dict(d):
     walkers = {mimetools.Message: lambda d: unicode(d)}
     pretty = unicode_dammit(d, walkers=walkers)
