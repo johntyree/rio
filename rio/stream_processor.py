@@ -67,9 +67,9 @@ def regex_matches(icy_data_stream, regexen):
         yield icy_data
 
 
-def prettified_icy_info(icy_data_stream):
-    """ Return an iterable of utf8 encoded strings that are normalized
-    versions of incoming icy_info. """
+def prettify_icy_info(icy_data_stream):
+    """ Return an iterable of IcyData where the icy_info has been
+    normalized to utf-8 encoded '{artist} - {title}. """
 
     artist_title_regex = re.compile(
         ur"StreamTitle='(?:(?P<artist>.*)\s+-\s+)?(?P<title>.+?)';")
@@ -89,4 +89,5 @@ def prettified_icy_info(icy_data_stream):
             else:
                 meat = u"Unknown format: {!r}".format(meat)
             meat = meat.replace(u'\x00', u'').strip()
-        yield meat
+        icy_data.info = meat
+        yield icy_data
