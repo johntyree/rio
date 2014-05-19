@@ -6,7 +6,6 @@ from __future__ import print_function
 import itertools as it
 import weakref
 from collections import defaultdict
-from operator import itemgetter
 from SocketServer import ThreadingMixIn
 from BaseHTTPServer import HTTPServer, BaseHTTPRequestHandler
 
