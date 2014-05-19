@@ -12,6 +12,24 @@ import sys
 import time
 from math import ceil
 
+import logging
+logger = logging.getLogger(__name__)
+
+
+def consume(iterable):
+    for _ in iterable:
+        pass
+
+
+def iflatten(iterables):
+    """ Return the lazy equivalent of it.chain() """
+    logger.info('begin iflatten')
+    for i in iterables:
+        logger.info('iflatten: next iterable')
+        for e in i:
+            yield e
+    logger.info('end iflatten')
+
 
 def sanitize_name(name):
     garbage = set(ur"~\/[];")
