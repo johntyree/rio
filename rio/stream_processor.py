@@ -45,7 +45,8 @@ def write_stream_to_buf(icy_data_stream, buf, with_icy=True):
 
 
 def regex_matches(icy_data_stream, regexen):
-    """ Return an iterable of tuples of (icy_info, matching regexen). """
+    """ Return an iterable of IcyData where 'AD' has been added to the
+    `tags` if any of `regexen` match `.info`. """
 
     def rotten(meat, bacteria):
         """ Make sure the meat isn't rotting with bact^H^H^H^Hcommercials. """
@@ -58,7 +59,8 @@ def regex_matches(icy_data_stream, regexen):
         for m in matches:
             msg = '''Rotten! {!r} <-> {!r}'''.format(icy_data.info, m)
             logger.info(msg)
-        yield icy_data.info, matches
+            icy_data.tags.add('AD')
+        yield icy_data
 
 
 def prettified_icy_info(icy_data_stream):
