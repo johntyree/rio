@@ -3,13 +3,14 @@
 
 from __future__ import division, print_function
 
-import logging
 import re
 
 from .icy_tools import reconstruct_icy
 from .utilities import unicode_dammit
 
+import logging
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 def icy_info_buf_size(icy_data_stream):
@@ -39,9 +40,12 @@ def write_stream_to_buf(icy_data_stream, buf, with_icy=True):
     if with_icy:
         for chunk in reconstruct_icy(icy_data_stream):
             yield buf.write(chunk)
+            logger.debug("chunk written")
     else:
         for icy_data in icy_data_stream:
             yield buf.write(icy_data.data)
+            logger.debug("chunk written")
+    logger.debug("finished writing stream")
 
 
 def regex_matches(icy_data_stream, regexen):
