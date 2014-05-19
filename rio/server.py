@@ -118,7 +118,7 @@ class StreamHandler(object):
         self.config = RioConfig()
         self.config.forward_metadata = 'icy-metadata' in self.request.headers
         try:
-            self.genre = self.path.rstrip('/').split('/')[1]
+            self.genre = self.request.path.rstrip('/').split('/')[1]
         except:
             self.genre = self.config._opts.genre
 
