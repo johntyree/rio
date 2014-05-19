@@ -39,9 +39,10 @@ def genre_stream(genre):
     streams = config.streams_in_genre(genre)
     logger.debug("found upstreams {!r} for genre {!r}".format(streams, genre))
     for stream in it.cycle(streams):
-        if stream.data:
-            stream.data.req.close()
         logger.debug("found upstream {!r}".format(stream))
+        if stream.data:
+            # In theory we don't need to do this, but we probably should.
+            stream.data.req.close()
         stream.data = BufferedRequest(
             stream.url, headers={'icy-metadata': 1})
         if not stream.data.ok:
