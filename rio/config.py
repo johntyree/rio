@@ -180,20 +180,19 @@ class RioConfig(object):
                     for bacterium in self.bacteria.get(net, [])}
         return bacteria
 
-    @property
-    def all_streams(self):
+    def streams_in_genre(self, genre):
         self.update(safe=True)
         streams = [make_stream(name, self)
-                   for genre, names in self._config['genre'].items()
-                   for name in names]
+                   for g, names in self._config['genre'].items()
+                   for name in names
+                   if g == genre]
         return streams
 
     @property
     def streams(self):
         self.update(safe=True)
-        if self._streams is None:
-            self._streams = [make_stream(name, self) for name in
-                             self._config['genre'][self._opts.genre]]
+        names = self._config['genre'][self._opts.genre]
+        self._streams = [make_stream(name, self) for name in names]
         return self._streams
 
     def cycle_streams(self):
