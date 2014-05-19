@@ -18,24 +18,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def build_headers(buf):
-    """ Read the stream until the first blank line, building up a header
-    dictionary.
-
-    """
-    hdrs = {}
-    data = buf.read(4096)
-    while True:
-        line, _, data = data.partition(b'\r\n')
-        if not line:
-            buf.appendleft(data)
-            break
-        elif b':' in line:
-            key, _, val = line.partition(b':')
-            hdrs[key] = val
-    return hdrs
-
-
 # FIXME: This function is getting seriously crufty...
 def icystream(stream, output_buffer, config=None):
     """Stream MP3 data, parsing the titles as you go and givng up when a
@@ -61,9 +43,9 @@ def icystream(stream, output_buffer, config=None):
 
     # If we got no headers back, assume that they are in-line. Everything
     # before the blank line is header, everything after is data
-    if not req.headers:
-        hdrs = build_headers(stream.data)
-        req.headers = hdrs
+    # if not req.headers:
+        # hdrs = build_headers(stream.data)
+        # req.headers = hdrs
 
     # Will we be receiving icy metadata? Forward it.
     interval = int(req.headers.get('icy-metaint', 0))
