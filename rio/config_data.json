@@ -21,7 +21,8 @@
             "di_classicvocaltrance",
             "di_progressivepsy",
             "di_classictechno",
-            "di_epictrance"
+            "di_epictrance",
+            "di_bassnjackinhouse"
         ],
         "lounge": [
             "di_lounge",
@@ -226,6 +227,12 @@
         },
         "di_lounge": {
             "url": "http://pub1.di.fm/di_lounge",
+            "network": [
+                "difm"
+            ]
+        },
+        "di_bassnjackinhouse": {
+            "url": "http://pub1.di.fm/di_bassnjackinhouse",
             "network": [
                 "difm"
             ]
