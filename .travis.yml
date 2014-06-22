@@ -7,4 +7,6 @@ python:
 install:
     - "pip install ."
 
-script: py.test --verbose --color=yes
+script:
+    - "py.test --verbose --color=yes"
+    - "python -m json.tool rio/config_data.json"
