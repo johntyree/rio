@@ -1,0 +1,11 @@
+lanugage: python
+
+python:
+    - "2.7"
+    - "pypy"
+
+install:
+    - "pip install nose"
+    - "pip install ."
+
+script: nosetests
