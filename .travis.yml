@@ -5,7 +5,6 @@ python:
     - "pypy"
 
 install:
-    - "pip install nose"
     - "pip install ."
 
 script: nosetests
