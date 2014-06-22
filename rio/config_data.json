@@ -20,7 +20,6 @@
             "di_vocaltrance",
             "di_classicvocaltrance",
             "di_progressivepsy",
-            "di_classictechno",
             "di_epictrance",
             "di_bassnjackinhouse"
         ],
@@ -130,12 +129,6 @@
         },
         "di_house": {
             "url": "http://pub1.di.fm/di_house",
-            "network": [
-                "difm"
-            ]
-        },
-        "di_classictechno": {
-            "url": "http://pub1.di.fm/di_classictechno",
             "network": [
                 "difm"
             ]
