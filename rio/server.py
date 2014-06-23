@@ -29,21 +29,22 @@ def get_stream_manager():
     if not _stream_manager:
         logger.debug("creating global StreamManager")
         _stream_manager = StreamManager(genre_stream)
-        logger.debug("global StreamManager created")
     return _stream_manager
 
 
 def genre_stream(genre):
+    """ Return a generator producing streams from the given genre. """
     logger.debug("creating stream for genre {!r}".format(genre))
     config = RioConfig()
     streams = config.streams_in_genre(genre)
     random.shuffle(streams)
     logger.debug("found upstreams {!r} for genre {!r}".format(streams, genre))
     for stream in it.cycle(streams):
-        logger.debug("found upstream {!r}".format(stream))
+        logger.debug("connecting to upstream {!r}".format(stream))
         if stream.data:
             # In theory we don't need to do this, but we probably should.
             stream.data.req.close()
+        del stream.data
         stream.data = BufferedRequest(
             stream.url, headers={'icy-metadata': 1})
         if not stream.data.ok:
@@ -75,7 +76,6 @@ class StreamManager(object):
         logger.debug("end StreamManager __init__")
 
     def grab_upstream(self, genre):
-        logger.debug("Grabbing upstream for {!r}".format(genre))
         if genre not in self._active_upstreams:
             logger.debug("{!r} not found, establishing".format(genre))
             container = ClonableIterator(iflatten(self.stream_factory(genre)))
@@ -89,15 +89,13 @@ class StreamManager(object):
         logger.debug("begin StreamManager connect")
         try:
             orig_stream = self.subscribers[genre].pop()
-            logger.debug("genre found, grabbed client stream")
+            logger.debug("live upstream found, cloning stream")
+            new_stream = orig_stream.clone()
         except KeyError:
-            logger.debug("genre not found")
-            orig_stream = self.grab_upstream(genre)
-        logger.debug("cloning stream")
-        new_stream = orig_stream.clone()
-        logger.debug("stream cloned")
+            logger.debug("grabbing upstream for genre {!r}".format(genre))
+            new_stream = self.grab_upstream(genre)
         self.subscribers[genre].add(new_stream)
-        logger.debug("stream added to subscriber list for genre")
+        logger.debug("new stream added to subscriber list for genre")
         return new_stream
 
 
