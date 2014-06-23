@@ -6,25 +6,17 @@ from .server import serve_on_port
 from .utilities import render_dict
 
 
-def list_genres(config):
-    genres = config._config['genre']
-    print(render_dict(genres))
-
-
-def list_streams(config):
-    for stream in config.all_streams:
-        print(stream)
-
-
 def main():
     """Run main."""
 
     config = RioConfig()
 
     if config.list_genres:
-        list_genres(config)
+        print(render_dict(config.genres))
     elif config.list_streams:
-        list_streams(config)
+        for stream in config.streams:
+            print(stream)
+
     else:
         port = config.port
         host = config.host
