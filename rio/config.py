@@ -13,6 +13,13 @@ import sys
 
 from .utilities import unicode_dammit, persistently_apply
 
+import logging
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8.8s [%(name)s:%(lineno)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level='INFO')
+logger = logging.getLogger(__name__)
+
 default_config = os.path.join(os.path.dirname(__file__), 'config_data.json')
 
 
@@ -90,6 +97,10 @@ class Stream(object):
         if self.data is None:
             raise RuntimeError("Stream data not set")
         return self.data.read(bytes)
+
+    def __del__(self):
+        logger.debug("{} is being gc'd".format(self))
+        super(Stream, self).__del__()
 
     def __str__(self):
         msg = "<Stream {name!s}: {url!r}>"
