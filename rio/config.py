@@ -135,7 +135,7 @@ class RioConfig(object):
         self.update()
 
     def render_config(self):
-        raw = json.dumps(self._config, indent=4)
+        raw = json.dumps(self._config, indent=4, sort_keys=True)
         return '\n'.join(l.rstrip() for l in raw.splitlines()) + '\n'
 
     def write_config(self, fname=None):
@@ -184,7 +184,7 @@ class RioConfig(object):
         self.update(safe=True)
         streams = [make_stream(name, self)
                    for g, names in self._config['genre'].items()
-                   for name in names
+                   for name in sorted(names)
                    if g == genre]
         return streams
 
@@ -194,6 +194,12 @@ class RioConfig(object):
         names = self._config['genre'][self._opts.genre]
         self._streams = [make_stream(name, self) for name in names]
         return self._streams
+
+    @property
+    def genres(self):
+        self.update(safe=True)
+        names = sorted(self._config['genre'])
+        return names
 
     def cycle_streams(self):
         lasturl = ''
