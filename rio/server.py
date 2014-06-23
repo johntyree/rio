@@ -4,6 +4,7 @@
 from __future__ import print_function
 
 import itertools as it
+import random
 import weakref
 from collections import defaultdict
 from SocketServer import ThreadingMixIn
@@ -36,6 +37,7 @@ def genre_stream(genre):
     logger.debug("creating stream for genre {!r}".format(genre))
     config = RioConfig()
     streams = config.streams_in_genre(genre)
+    random.shuffle(streams)
     logger.debug("found upstreams {!r} for genre {!r}".format(streams, genre))
     for stream in it.cycle(streams):
         logger.debug("found upstream {!r}".format(stream))
