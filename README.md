@@ -1,6 +1,8 @@
 Rio: (Radio without ads)
 ========================
 
+[![BuildStatus](https://api.travis-ci.org/johntyree/rio.svg)](http://travis-ci.org/johntyree/rio)
+
 A pseudo-DJ for internet radio.
 
 How does it work?
