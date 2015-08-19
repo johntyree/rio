@@ -5,6 +5,8 @@ Rio: (Radio without ads)
 
 A pseudo-DJ for internet radio.
 
+### This is undergoing a rewrite. See the [`generators`](https://github.com/johntyree/rio/tree/generators) branch.
+
 How does it work?
 -----------------
 
