@@ -52,3 +52,6 @@ Running
 `http://localhost:1986`. (reppin' funky '86!)
 
 Songs will be saved to `<DIR>` if specified.
+
+This version does not yet learn new ads as the old method was not robust
+enough. Audio fingerprinting is being investigated as an alternative.
