@@ -87,6 +87,8 @@ def parseargs(argv=sys.argv):
 
 class Stream(object):
 
+    """ A representation of a an ICY stream. """
+
     def __init__(self, name, url, networks):
         self.name = name
         self.url = url
@@ -170,6 +172,7 @@ class RioConfig(object):
         return os.stat(self.config_file).st_mtime
 
     def add_bacterium(self, networks, bacterium):
+        """ Add a template for matching against advertisement text. """
         msg = "New bacterium for networks {}: {!r}"
         print(msg.format(networks, bacterium))
         for net in networks:
