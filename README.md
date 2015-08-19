@@ -5,6 +5,11 @@ Rio: (Radio without ads)
 
 A pseudo-DJ for internet radio.
 
+## Rewrite
+This is an ambitious rewrite from scratch as an experiment on top of iterators.
+The code is much nicer than the original implementation, but it is not
+yet feature complete.
+
 How does it work?
 -----------------
 
